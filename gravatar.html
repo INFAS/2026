@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gravatar 頭像預覽</title>
+  <style>
+    :root { --bg:#0b0c10; --card:#121318; --text:#e7e9ee; --muted:#9aa3b2; --border:#22242c; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;
+           background:linear-gradient(180deg,#0b0c10,#0e1116 35%,#0b0c10); color:var(--text); }
+    .wrap { max-width:880px; margin:48px auto; padding:0 20px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:0 8px 30px rgba(0,0,0,.25); }
+    h1 { font-size:22px; margin:0 0 16px; letter-spacing:.3px; }
+    p.hint { margin:6px 0 18px; color:var(--muted); font-size:14px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    .field { display:flex; flex-direction:column; gap:8px; }
+    .label { font-size:13px; color:#cdd3df; }
+    input[type="email"], input[type="text"], input[type="number"], select {
+      width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px;
+      background:#0e1117; color:var(--text); outline:none;
+    }
+    input[readonly] { color:#d8deea; }
+    .row { display:flex; gap:10px; align-items:center; }
+    .btn {
+      padding:10px 12px; border:1px solid var(--border); background:#161922; color:var(--text);
+      border-radius:10px; cursor:pointer; transition:transform .05s ease, opacity .2s ease;
+    }
+    .btn:hover { opacity:.9; }
+    .btn:active { transform:translateY(1px); }
+    .preview {
+      display:flex; gap:18px; align-items:center; border:1px dashed var(--border);
+      padding:14px; border-radius:12px; background:#0b0d12;
+    }
+    img.avatar { width:96px; height:96px; border-radius:12px; border:1px solid var(--border); }
+    .muted { color:var(--muted); font-size:12px; }
+    .danger { color:#ff9a9a; font-size:12px; }
+    @media (max-width:760px){ .grid { grid-template-columns: 1fr; } }
+    code.k { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:12px; background:#0e1117; padding:2px 6px; border-radius:6px; border:1px solid var(--border);}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Gravatar 頭像預覽</h1>
+      <p class="hint">Gravatar 以 <code class="k">MD5(小寫且去空白的 email)</code> 做為鍵值。輸入 email 後即時顯示頭像與可複製的圖片網址。</p>
+
+      <div class="grid">
+        <div class="field">
+          <label class="label" for="email">Email</label>
+          <input id="email" type="email" placeholder="you@example.com" autocomplete="email" />
+          <div id="emailWarn" class="danger" style="display:none;">看起來不是有效的 email 格式（仍可嘗試產生頭像）。</div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="size">尺寸 (s，1–512，預設 200)</label>
+          <input id="size" type="number" min="1" max="512" step="1" value="200" />
+        </div>
+
+        <div class="field">
+          <label class="label" for="defaultStyle">預設樣式 (d)</label>
+          <select id="defaultStyle">
+            <option value="mp">mp（神秘人）</option>
+            <option value="identicon" selected>identicon</option>
+            <option value="monsterid">monsterid</option>
+            <option value="wavatar">wavatar</option>
+            <option value="retro">retro</option>
+            <option value="robohash">robohash</option>
+            <option value="blank">blank</option>
+            <option value="404">404（無頭像時回 404）</option>
+          </select>
+          <div class="muted">當該 email 沒註冊 Gravatar 時顯示的預設圖。</div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="rating">分級 (r)</label>
+          <select id="rating">
+            <option value="g" selected>g</option>
+            <option value="pg">pg</option>
+            <option value="r">r</option>
+            <option value="x">x</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="preview">
+        <img id="avatar" class="avatar" alt="Gravatar 頭像預覽" />
+        <div style="flex:1; min-width:0;">
+          <div class="field">
+            <label class="label" for="url">圖片 URL</label>
+            <div class="row">
+              <input id="url" type="text" readonly />
+              <button class="btn" id="copyUrl">複製</button>
+              <a id="openUrl" class="btn" target="_blank" rel="noopener">開新分頁</a>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="hash">Email MD5</label>
+            <div class="row">
+              <input id="hash" type="text" readonly />
+              <button class="btn" id="copyHash">複製</button>
+            </div>
+          </div>
+          <div class="muted">提示：圖片可直接當作 <code class="k">&lt;img src&gt;</code> 使用，或設為網站的頭像顯示。</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:12px;">隱私提醒：Gravatar URL 會暴露 email 的 MD5 雜湊。若不希望他人嘗試反推，請避免公開顯示該 URL。</p>
+  </div>
+
+  <!-- MD5：使用輕量外掛（blueimp-md5，MIT） -->
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.19.0/js/md5.min.js"></script>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const emailEl = $('email');
+    const sizeEl = $('size');
+    const defaultEl = $('defaultStyle');
+    const ratingEl = $('rating');
+    const avatarEl = $('avatar');
+    const urlEl = $('url');
+    const hashEl = $('hash');
+    const copyUrlBtn = $('copyUrl');
+    const copyHashBtn = $('copyHash');
+    const emailWarn = $('emailWarn');
+    const openUrl = $('openUrl');
+
+    function gravatarHash(email){
+      // Gravatar 需求：小寫 + 去前後空白，再 MD5
+      return md5((email || '').trim().toLowerCase());
+    }
+
+    function buildUrl(hash, size, d, r){
+      const s = Math.min(512, Math.max(1, Number(size) || 200));
+      const base = `https://www.gravatar.com/avatar/${hash}`;
+      const qs = new URLSearchParams({ s: String(s), d, r });
+      return `${base}?${qs.toString()}`;
+    }
+
+    function update() {
+      const emailVal = emailEl.value;
+      emailWarn.style.display = (emailVal && emailEl.validity.typeMismatch) ? 'block' : 'none';
+
+      const hash = gravatarHash(emailVal);
+      const url = buildUrl(hash, sizeEl.value, defaultEl.value, ratingEl.value);
+
+      avatarEl.src = url;
+      urlEl.value = url;
+      hashEl.value = hash;
+      openUrl.href = url;
+      openUrl.textContent = '開新分頁';
+      avatarEl.alt = `Gravatar 頭像（${sizeEl.value}px）`;
+    }
+
+    async function copy(text){
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        // 備援：舊方法
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    for (const el of [emailEl, sizeEl, defaultEl, ratingEl]) {
+      el.addEventListener('input', update);
+      el.addEventListener('change', update);
+    }
+    copyUrlBtn.addEventListener('click', () => copy(urlEl.value));
+    copyHashBtn.addEventListener('click', () => copy(hashEl.value));
+
+    // 支援 ?email=...&s=...&d=...&r=...
+    (function initFromQuery(){
+      const q = new URLSearchParams(location.search);
+      if (q.get('email')) emailEl.value = q.get('email');
+      if (q.get('s')) sizeEl.value = q.get('s');
+      if (q.get('d')) defaultEl.value = q.get('d');
+      if (q.get('r')) ratingEl.value = q.get('r');
+    })();
+
+    // 初始化
+    update();
+  </script>
+</body>
+</html>

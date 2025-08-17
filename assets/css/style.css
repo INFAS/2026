@@ -1,0 +1,126 @@
+/* =====================================================
+   INFAS 2026 — Global Stylesheet
+   Extracted from index.html and modularized for reuse
+   ===================================================== */
+
+/* ------------------------------
+   0) Design Tokens (CSS Variables)
+   ------------------------------ */
+:root{
+  /* Brand */
+  --brand-dark:#2C2C2C;             /* navbar bg */
+  --brand-text:#FFFFFF;             /* navbar text */
+  --hero-grad-1:#55C1A7;            /* hero gradient start */
+  --hero-grad-2:#7ED6C1;            /* hero gradient end */
+  --text-strong:#111827;            /* headings */
+  --text-body:#374151;              /* paragraphs */
+  --card-bg:#FFFFFF;                /* card */
+  --card-border:#7ED6C1;            /* card accent */
+  --cta:#3B82F6;                    /* primary button */
+  --cta-hover-ring:#F472B6;         /* pink-ish glow */
+  --muted:#9CA3AF;                  /* subtle text */
+  --focus:#22C55E;                  /* focus ring */
+  --badge-bg:#0F172A;               /* badge */
+  --badge-text:#C7D2FE;
+
+  /* Spacing & Elevation */
+  --space-1:0.25rem;  /* 4 */
+  --space-2:0.5rem;   /* 8 */
+  --space-3:0.75rem;  /* 12 */
+  --space-4:1rem;     /* 16 */
+  --space-5:1.25rem;  /* 20 */
+  --space-6:1.5rem;   /* 24 */
+  --space-8:2rem;     /* 32 */
+  --space-10:2.5rem;  /* 40 */
+  --radius:1rem;      /* 16 */
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 8px 24px rgba(0,0,0,.12);
+}
+
+/* ------------------------------
+   1) Base / Reset
+   ------------------------------ */
+*{box-sizing:border-box}
+html:focus-within{scroll-behavior:smooth}
+body{margin:0; color:var(--text-body); background:#FAFAFA; line-height:1.6}
+h1,h2,h3{color:var(--text-strong); line-height:1.25}
+
+/* Screen-reader skip link */
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{left:var(--space-4);top:var(--space-4);width:auto;height:auto;background:#fff;padding:var(--space-3) var(--space-4);border-radius:.5rem;outline:2px solid var(--focus)}
+
+/* ------------------------------
+   2) Navigation
+   ------------------------------ */
+.nav{position:sticky;top:0;z-index:50;background:var(--brand-dark);color:var(--brand-text)}
+.nav-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-4)}
+.brand{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:inherit}
+/* The logo block supports either a <span> (fallback gradient) or <img> */
+.brand .logo{width:36px;height:36px;border-radius:10px;display:block;background:linear-gradient(135deg,var(--hero-grad-1),var(--hero-grad-2));object-fit:cover}
+.nav a{color:var(--brand-text);text-decoration:none;opacity:.9}
+.nav a:hover{opacity:1}
+.nav-links{display:flex;gap:var(--space-4)}
+
+/* ------------------------------
+   3) Hero
+   ------------------------------ */
+.hero{background:linear-gradient(120deg,var(--hero-grad-1),var(--hero-grad-2)); padding: clamp(3rem, 6vw, 6rem) var(--space-4)}
+.hero-inner{max-width:1120px;margin:0 auto;display:grid;gap:var(--space-6)}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--badge-bg);color:var(--badge-text);padding:.25rem .6rem;border-radius:999px;font-size:.875rem;letter-spacing:.02em}
+.badge-dot{width:8px;height:8px;border-radius:999px;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.hero h1{font-size:clamp(2rem,5vw,3rem);margin:0;color:#0b1220}
+.hero p{font-size:clamp(1rem,2.3vw,1.2rem);margin:0;color:#0b1220cc}
+.cta-row{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-6)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.1rem;border-radius:999px;border:2px solid transparent;font-weight:600;text-decoration:none;box-shadow:var(--shadow-sm)}
+.btn-primary{background:var(--cta);color:white}
+.btn-primary:hover{box-shadow:0 0 0 4px var(--cta-hover-ring)}
+.btn-secondary{background:white;color:#0f172a;border-color:#E5E7EB}
+.btn-secondary:hover{border-color:#0ea5e9}
+
+/* Countdown */
+.countdown{display:flex;gap:var(--space-4);margin-top:var(--space-6);flex-wrap:wrap}
+.cd-box{background:#ffffffcf;border:1px solid #e5e7eb;border-radius:.75rem;padding:.6rem .9rem;text-align:center;min-width:86px}
+.cd-box strong{display:block;font-size:1.4rem;color:#0b1220}
+
+/* ------------------------------
+   4) Sections / Cards
+   ------------------------------ */
+.section{padding: clamp(2.5rem, 5vw, 4rem) var(--space-4)}
+.container{max-width:1120px;margin:0 auto}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-6)}
+@media (max-width:900px){.cards{grid-template-columns:1fr}}
+.card{background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:var(--space-6);box-shadow:var(--shadow-sm);transition:transform .25s ease, box-shadow .25s ease}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.card h3{margin-top:0;margin-bottom:var(--space-3)}
+.card p{margin:0 0 var(--space-4) 0}
+
+/* ------------------------------
+   5) About teaser / split
+   ------------------------------ */
+.split{display:grid;grid-template-columns:1.2fr .8fr;gap:var(--space-8);align-items:center}
+@media (max-width:900px){.split{grid-template-columns:1fr}}
+.illustration{aspect-ratio:16/10;border-radius:var(--radius);background:
+  radial-gradient(60% 60% at 20% 20%, rgba(255,255,255,.8), transparent 60%),
+  radial-gradient(60% 60% at 80% 30%, rgba(255,255,255,.7), transparent 60%),
+  linear-gradient(135deg, #EEF9F6, #E6FFFA)}
+
+/* ------------------------------
+   6) Footer
+   ------------------------------ */
+footer{background:#0f172a;color:#cbd5e1}
+.footer-inner{max-width:1120px;margin:0 auto;padding:var(--space-8) var(--space-4);display:grid;gap:var(--space-6)}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:var(--space-6)}
+@media (max-width:900px){.foot-grid{grid-template-columns:1fr}}
+.foot-links a{display:block;color:#cbd5e1;text-decoration:none;margin:.35rem 0;opacity:.9}
+.foot-links a:hover{opacity:1}
+.copyright{border-top:1px solid rgba(203,213,225,.2);padding-top:var(--space-4);font-size:.9rem;color:#94a3b8}
+
+/* ------------------------------
+   7) Accessibility / Focus & Motion
+   ------------------------------ */
+:where(a,button,[role="button"]):focus{outline:3px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
