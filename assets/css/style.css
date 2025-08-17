@@ -124,3 +124,16 @@ footer{background:#0f172a;color:#cbd5e1}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
 }
+.callout {
+  border-left: 4px solid #444;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+.callout.important { border-color: red; background: #ffeaea; }
+.callout.note { border-color: blue; background: #eef5ff; }
+.callout.tip { border-color: green; background: #eaffea; }
+.callout.warning { border-color: orange; background: #fff4e0; }
+.callout.success { border-color: seagreen; background: #e9fff0; }
+.callout.info { border-color: steelblue; background: #e9f5ff; }

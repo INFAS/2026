@@ -134,7 +134,31 @@
     import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
     const DOMPurify = createDOMPurify(window);
-
+    
+    marked.use({
+      extensions: [{
+        name: 'callouts',
+        level: 'block',
+        start(src) { return src.match(/\[!|\:\:\:/)?.index; },
+        tokenizer(src) {
+          const rule = /^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'callout',
+              raw: match[0],
+              kind: match[1] || match[2],
+              text: match[3].trim()
+            };
+          }
+        },
+        renderer(token) {
+          return `<div class="callout ${token.kind.toLowerCase()}">
+                    <strong>${token.kind}</strong><br>${marked.parse(token.text)}
+                  </div>`;
+        }
+      }]
+    });
     // === HackMD 設定 ===
     const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
     const CACHE_KEY  = 'md:sponsor:v1';
