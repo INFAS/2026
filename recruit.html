@@ -25,7 +25,7 @@
                  style-src 'self' 'unsafe-inline';
                  script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net 'unsafe-inline';
                  font-src 'self' https://font.emtech.cc data:;
-                 connect-src 'self' https://hackmd.io;
+                 connect-src 'self' https://hackmd.io https://*.hackmd.io;
                  frame-src https://hackmd.io https://forms.gle https://docs.google.com;
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
@@ -70,7 +70,7 @@
           <p class="emfont-CEFFontsCJKMono">職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
           <div class="cta-row">
             <a class="btn btn-primary emfont-CEFFontsCJKMono" href="#content">查看招募資訊</a>
-            <a class="btn btn-secondary emfont-CEFFontsCJKMono" id="open-hackmd" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
+            <a class="btn btn-secondary emfont-CEFFontsCJKMono" id="open-hackmd" href="https://hackmd.io/vRCOIiNGTxi9iyE8dG97Jg" target="_blank" rel="noopener">在 HackMD 開啟</a>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@
 
           <div class="cta-row" style="margin-top:1rem;gap:.5rem;display:flex;flex-direction:column">
             <button id="refresh" class="btn btn-secondary emfont-CEFFontsCJKMono" type="button">重新整理內容</button>
-            <a id="apply" class="btn btn-primary emfont-CEFFontsCJKMono" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">我要應徵</a>
+            <a id="apply" class="btn btn-primary emfont-CEFFontsCJKMono" href="https://forms.gle/" target="_blank" rel="noopener">我要應徵</a>
           </div>
         </aside>
 
@@ -109,7 +109,7 @@
         <div class="card">
           <p class="emfont-CEFFontsCJKMono">⚠️ 無法即時抓取 HackMD 內容（可能是網路或 CORS 問題）。以下為備援嵌入：</p>
           <div style="aspect-ratio:16/9;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff">
-            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="100%" style="border:0"></iframe>
+            <iframe title="HackMD 招募專區" src="https://hackmd.io/vRCOIiNGTxi9iyE8dG97Jg" width="100%" height="100%" style="border:0"></iframe>
           </div>
         </div>
       </div>
@@ -144,8 +144,8 @@
 
   <!-- Scripts: marked + DOMPurify + Fuse -->
   <script type="module">
-    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
-    const CACHE_KEY  = 'md:recruit:v2';
+    const HACKMD_URL = 'https://hackmd.io/vRCOIiNGTxi9iyE8dG97Jg/download';
+    const CACHE_KEY  = 'md:recruit:v3';
     const CACHE_TTL  = 60 * 60 * 1000; // 60 分鐘
 
     const [{ marked }, DOMPurify, { default: Fuse }] = await Promise.all([
@@ -212,8 +212,12 @@
         if(cached){ render(cached); return; }
       }
       try{
-        const res = await fetch(HACKMD_URL, { cache:'no-store' });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetch(HACKMD_URL, {
+          cache:'no-store',
+          mode:'cors',
+          headers: { 'Accept':'text/plain' }
+        });
+        if(!res.ok) throw new Error(`Fetch ${HACKMD_URL} -> ${res.status} ${res.statusText}`);
         const md = await res.text();
         render(md); writeCache(md); $fallback.hidden = true;
       }catch(err){
@@ -240,7 +244,7 @@
       $count.textContent = `找到 ${results.length} 筆`;
       results.slice(0,10).forEach(r=>{
         const el = r.item.el; if(!el) return;
-        const re = new RegExp(term.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&'), 'ig');
+        const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'ig');
         el.innerHTML = el.textContent.replace(re, m=>`<mark>${m}</mark>`);
       });
       if(results[0]?.item.el) results[0].item.el.scrollIntoView({ behavior:'smooth', block:'center' });
