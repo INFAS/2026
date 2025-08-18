@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
+  <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。">
+  <meta name="theme-color" content="#2C2C2C" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="INFAS 2026 招募專區">
+  <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
+  <meta property="og:image" content="/assets/img/og-cover.png">
+  <meta property="og:locale" content="zh_TW">
+
+  <!-- Icon -->
+  <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- 基礎 CSP（靜態環境可調整；此頁需要抓 hackmd 及載入 CDN 套件） -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 img-src 'self' data: https:;
+                 style-src 'self' 'unsafe-inline';
+                 script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+                 font-src 'self' https://font.emtech.cc data:;
+                 connect-src 'self' https://hackmd.io;
+                 frame-src https://hackmd.io https://forms.gle https://docs.google.com;
+                 base-uri 'self';
+                 form-action 'self' https://forms.gle">
+
+  <!-- emfont: 字型載入 -->
+  <script type="module">
+    import "https://font.emtech.cc/emfont.js";
+    emfont.init();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+
+  <!-- Navbar -->
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a class="brand" href="index.html" aria-label="INFAS 首頁">
+        <img src="./favicon256.png" alt="INFAS logo" class="logo" width="36" height="36" />
+        <strong class="emfont-CEFFontsCJKMono">INFAS 2026</strong>
+      </a>
+      <nav aria-label="主導覽">
+        <div class="nav-links emfont-CEFFontsCJKMono">
+          <a href="about.html">關於</a>
+          <a href="recruit.html">招募</a>
+          <a href="sponsor.html" aria-current="page">贊助</a>
+          <a href="policy/privacy.html">隱私權</a>
+          <a href="index.html#contact">聯絡</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero / Page title -->
+    <section class="hero" aria-label="招募">
+      <div class="hero-inner">
+        <span class="badge emfont-CEFFontsCJKMono"><span class="badge-dot" aria-hidden="true"></span>招募專區 · 內容即時同步</span>
+        <div>
+          <h1 class="emfont-CEFFontsCJKMono">加入 INFAS 2026 籌備團隊</h1>
+          <p class="emfont-CEFFontsCJKMono">職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
+          <div class="cta-row">
+            <a class="btn btn-primary emfont-CEFFontsCJKMono" href="#content">查看招募資訊</a>
+            <a class="btn btn-secondary emfont-CEFFontsCJKMono" id="open-hackmd" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content & TOC -->
+    <section class="section" aria-label="招募內容">
+      <div class="container" id="content" style="display:grid;grid-template-columns:260px 1fr;gap:2rem;">
+        <aside aria-label="頁面目錄" style="position:sticky;top:80px;align-self:start">
+          <h2 class="emfont-CEFFontsCJKMono" style="margin-top:0">目錄</h2>
+          <nav id="toc" class="foot-links" aria-label="章節導覽"></nav>
+          <div style="margin-top:1rem">
+            <button id="refresh" class="btn btn-secondary emfont-CEFFontsCJKMono" type="button">重新整理內容</button>
+          </div>
+        </aside>
+
+        <article id="md-root" aria-live="polite" aria-busy="true">
+          <!-- 這裡會放入由 HackMD 抓取並渲染的內容 -->
+        </article>
+      </div>
+
+      <!-- 抓取失敗備援：iframe 直接嵌 HackMD -->
+      <div class="container" id="fallback" hidden>
+        <div class="card">
+          <p class="emfont-CEFFontsCJKMono">⚠️ 無法即時抓取 HackMD 內容（可能是網路或 CORS 問題）。以下為備援嵌入：</p>
+          <div style="aspect-ratio:16/9;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
+            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="100%" style="border:0"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer（沿用全站樣式） -->
+  <footer>
+    <div class="footer-inner">
+      <div class="foot-grid">
+        <div>
+          <h3 class="emfont-CEFFontsCJKMono">Information Association of Student（INFAS）</h3>
+          <p class="emfont-CEFFontsCJKMono">中學生資訊年會｜Since 2016</p>
+        </div>
+        <div class="foot-links">
+          <h4 class="emfont-CEFFontsCJKMono">網站</h4>
+          <a href="index.html">首頁</a>
+          <a href="recruit.html">招募</a>
+          <a href="sponsor.html" aria-current="page">贊助</a>
+          <a href="policy/privacy.html">隱私權政策</a>
+        </div>
+        <div class="foot-links">
+          <h4 class="emfont-CEFFontsCJKMono">社群</h4>
+          <a href="#" aria-disabled="true">Facebook（稍後公布）</a>
+          <a href="#" aria-disabled="true">Instagram（稍後公布）</a>
+          <a href="https://hackmd.io/@INFAS" target="_blank" rel="noopener">HackMD</a>
+        </div>
+      </div>
+      <div class="copyright emfont-CEFFontsCJKMono">© 2026 INFAS. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- Libraries：marked + DOMPurify（使用 ESM CDN） -->
+  <script type="module">
+    import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
+    import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
+
+    const DOMPurify = createDOMPurify(window);
+    
+    marked.use({
+      extensions: [{
+        name: 'callouts',
+        level: 'block',
+        start(src) { return src.match(/\[!|\:\:\:/)?.index; },
+        tokenizer(src) {
+          const rule = /^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'callout',
+              raw: match[0],
+              kind: match[1] || match[2],
+              text: match[3].trim()
+            };
+          }
+        },
+        renderer(token) {
+          return `<div class="callout ${token.kind.toLowerCase()}">
+                    <strong>${token.kind}</strong><br>${marked.parse(token.text)}
+                  </div>`;
+        }
+      }]
+    });
+    // === HackMD 設定 ===
+    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
+    const CACHE_KEY  = 'md:recruit:v1';
+    const CACHE_TTL  = 60 * 60 * 1000; // 60 分鐘
+
+    const $root     = document.getElementById('md-root');
+    const $toc      = document.getElementById('toc');
+    const $fallback = document.getElementById('fallback');
+    const $refresh  = document.getElementById('refresh');
+
+    // 產生錨點 slug
+    const slugify = (txt) => txt
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu,'')
+      .trim()
+      .replace(/\s+/g,'-');
+
+    // 建立 TOC（掃描 h2~h3）
+    function buildTOC(container){
+      const heads = container.querySelectorAll('h2, h3');
+      if(!heads.length){ $toc.innerHTML = '<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; return; }
+
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.paddingLeft = '0';
+
+      heads.forEach(h => {
+        const level = h.tagName === 'H2' ? 2 : 3;
+        if(!h.id) h.id = slugify(h.textContent);
+        const li = document.createElement('li');
+        li.style.margin = level === 2 ? '.3rem 0' : '.2rem 0 .2rem 1rem';
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent;
+        a.className = 'emfont-CEFFontsCJKMono';
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      $toc.replaceChildren(ul);
+    }
+
+    // 渲染 Markdown -> HTML （含淨化）
+    function render(md){
+      const raw = marked.parse(md, { mangle:false, headerIds:false });
+      const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }});
+      $root.innerHTML = clean;
+      $root.setAttribute('aria-busy', 'false');
+      buildTOC($root);
+    }
+
+    // 從 localStorage 讀快取（若新鮮）
+    function readCache(){
+      try{
+        const raw = localStorage.getItem(CACHE_KEY);
+        if(!raw) return null;
+        const { ts, md } = JSON.parse(raw);
+        if(Date.now() - ts < CACHE_TTL) return md;
+      }catch{}
+      return null;
+    }
+
+    // 寫入快取
+    function writeCache(md){
+      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md })); }catch{}
+    }
+
+    // 抓取 HackMD
+    async function loadMarkdown({ refresh = false } = {}){
+      $root.setAttribute('aria-busy', 'true');
+
+      if(!refresh){
+        const cached = readCache();
+        if(cached){ render(cached); return; }
+      }
+
+      try{
+        const res = await fetch(HACKMD_URL, { cache:'no-store' });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const md = await res.text();
+        render(md);
+        writeCache(md);
+        $fallback.hidden = true;
+      }catch(err){
+        console.warn('HackMD 取用失敗：', err);
+        $fallback.hidden = false;
+        $root.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    // 事件：重新整理內容
+    $refresh.addEventListener('click', () => {
+      try{ localStorage.removeItem(CACHE_KEY); }catch{}
+      loadMarkdown({ refresh:true });
+    });
+
+    // 初始載入
+    loadMarkdown();
+  </script>
+</body>
+</html>
