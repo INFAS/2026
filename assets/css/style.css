@@ -124,6 +124,7 @@ footer{background:#0f172a;color:#cbd5e1}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
 }
+/* === 基底樣式 === */
 .callout {
   border-left: 4px solid #444;
   padding: 0.8em 1em;
@@ -131,9 +132,66 @@ footer{background:#0f172a;color:#cbd5e1}
   border-radius: 6px;
   background: #f9f9f9;
 }
-.callout.important { border-color: red; background: #ffeaea; }
-.callout.note { border-color: blue; background: #eef5ff; }
-.callout.tip { border-color: green; background: #eaffea; }
-.callout.warning { border-color: orange; background: #fff4e0; }
-.callout.success { border-color: seagreen; background: #e9fff0; }
-.callout.info { border-color: steelblue; background: #e9f5ff; }
+.callout .title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: .4em;
+}
+
+/* === 五大類 (支援 [!Note]/[!Tip]/[!Important]/[!Warning]/[!Caution]) === */
+.callout.note {
+  border-color: #3b82f6;
+  background: #eef5ff;
+  color: #1e3a8a;
+}
+.callout.note .title { color: #1d4ed8; }
+
+.callout.tip {
+  border-color: #10b981;
+  background: #eaffea;
+  color: #065f46;
+}
+.callout.tip .title { color: #047857; }
+
+.callout.important {
+  border-color: #8b5cf6;
+  background: #f5f3ff;
+  color: #4c1d95;
+}
+.callout.important .title { color: #6d28d9; }
+
+.callout.warning {
+  border-color: #f59e0b;
+  background: #fff4e0;
+  color: #78350f;
+}
+.callout.warning .title { color: #b45309; }
+
+.callout.caution {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+.callout.caution .title { color: #b91c1c; }
+
+/* === HackMD 內建 :::success / :::info / :::warning / :::danger === */
+.callout.success {
+  border-color: seagreen;
+  background: #e9fff0;
+  color: #065f46;
+}
+.callout.success .title { color: seagreen; }
+
+.callout.info {
+  border-color: steelblue;
+  background: #e9f5ff;
+  color: #1e3a8a;
+}
+.callout.info .title { color: steelblue; }
+
+.callout.danger {
+  border-color: crimson;
+  background: #ffeaea;
+  color: #7f1d1d;
+}
+.callout.danger .title { color: crimson; }
