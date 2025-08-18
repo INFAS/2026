@@ -210,8 +210,24 @@ function render(md){
   $root.innerHTML = clean;
   $root.setAttribute('aria-busy', 'false');
   buildTOC($root);
+  autoResizeMedia($root);
 }
-
+function autoResizeMedia(container){
+  container.querySelectorAll('iframe').forEach(el => {
+    el.style.width = '100%';
+    el.style.height = `${el.clientWidth * 9 / 16}px`; // 16:9 高寬比
+    el.style.maxWidth = '100%';
+  });
+  container.querySelectorAll('video').forEach(el => {
+    el.style.width = '100%';
+    el.style.height = 'auto';
+    el.controls = true;  // 保證顯示控制列
+  });
+  container.querySelectorAll('audio').forEach(el => {
+    el.style.width = '100%';
+    el.controls = true; // 保證顯示控制列
+  });
+}
 function readCache(){
   try{
     const raw = localStorage.getItem(CACHE_KEY);
