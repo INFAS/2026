@@ -16,6 +16,7 @@
   <!-- Use site's global stylesheet per user's request -->
   <link rel="stylesheet" href="assets/css/style.css" />
 
+<<<<<<< HEAD
   <!-- Minimal extra styles only for markdown reset that are not in style.css -->
   <style>
     .markdown-body{max-width:unset}
@@ -37,6 +38,19 @@
                  frame-src https://hackmd.io https://forms.gle https://docs.google.com;
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
+=======
+  <!-- 基礎 CSP（靜態環境可調整；此頁需要抓 hackmd 及載入 CDN 套件） -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               img-src 'self' data: https:;
+               style-src 'self' 'unsafe-inline';
+               script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+               font-src 'self' https://font.emtech.cc data:;
+               connect-src 'self' https://hackmd.io;
+               frame-src 'self' https://hackmd.io https://forms.gle https://docs.google.com;
+               base-uri 'self';
+               form-action 'self' https://forms.gle">
+>>>>>>> 6eea0bab57ec1e9b344746ae6703521134e5d125
 
   <!-- emfont -->
   <script type="module">
@@ -303,6 +317,12 @@ import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
 import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
 const DOMPurify = createDOMPurify(window);
+DOMPurify.setConfig({
+  ADD_TAGS: ['iframe', 'video', 'audio', 'source'],
+  ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'controls', 'autoplay', 'muted', 'loop'],
+  USE_PROFILES: { html: true }
+});
+
 
 marked.use({
   extensions: [{
@@ -381,12 +401,28 @@ function buildTOC(container){
 
 function render(md){
   const raw = marked.parse(md, { mangle:false, headerIds:false });
-  const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }});
+  const clean = DOMPurify.sanitize(raw);  // 不需要再帶 USE_PROFILES
   $root.innerHTML = clean;
   $root.setAttribute('aria-busy', 'false');
   buildTOC($root);
+  autoResizeMedia($root);
 }
-
+function autoResizeMedia(container){
+  container.querySelectorAll('iframe').forEach(el => {
+    el.style.width = '100%';
+    el.style.height = `${el.clientWidth * 9 / 16}px`; // 16:9 高寬比
+    el.style.maxWidth = '100%';
+  });
+  container.querySelectorAll('video').forEach(el => {
+    el.style.width = '100%';
+    el.style.height = 'auto';
+    el.controls = true;  // 保證顯示控制列
+  });
+  container.querySelectorAll('audio').forEach(el => {
+    el.style.width = '100%';
+    el.controls = true; // 保證顯示控制列
+  });
+}
 function readCache(){
   try{
     const raw = localStorage.getItem(CACHE_KEY);
@@ -429,9 +465,14 @@ $refresh.addEventListener('click', () => {
 });
 
 loadMarkdown();
+
+window.addEventListener('resize', () => autoResizeMedia($root));
 </script>
 </body>
 </html>
+<<<<<<< HEAD
 
 </html>
 >>>>>>> d773455caaf06aa17fb2d99b755e2cacda5089e1
+=======
+>>>>>>> 6eea0bab57ec1e9b344746ae6703521134e5d125
