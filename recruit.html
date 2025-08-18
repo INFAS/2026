@@ -1,152 +1,150 @@
 <!doctype html>
 <html lang="zh-Hant-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
-  <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。">
-  <meta name="theme-color" content="#2C2C2C" />
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="INFAS 2026 招募專區">
-  <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
-  <meta property="og:image" content="/assets/img/og-cover.png">
-  <meta property="og:locale" content="zh_TW">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
+  <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。">
+  <meta name="theme-color" content="#2C2C2C" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="INFAS 2026 招募專區">
+  <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
+  <meta property="og:image" content="/assets/img/og-cover.png">
+  <meta property="og:locale" content="zh_TW">
 
-  <!-- Icon -->
-  <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- 基礎 CSP（靜態環境可調整；此頁需要抓 hackmd 及載入 CDN 套件） -->
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self';
-                 img-src 'self' data: https:;
-                 style-src 'self' 'unsafe-inline';
-                 script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
-                 font-src 'self' https://font.emtech.cc data:;
-                 connect-src 'self' https://hackmd.io;
-                 frame-src https://hackmd.io https://forms.gle https://docs.google.com;
-                 base-uri 'self';
-                 form-action 'self' https://forms.gle">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 img-src 'self' data: https:;
+                 style-src 'self' 'unsafe-inline';
+                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+                 font-src 'self' data:;
+                 connect-src 'self' https://hackmd.io;
+                 frame-src https://hackmd.io https://forms.gle https://docs.google.com;
+                 frame-ancestors 'self' https://forms.gle;
+                 base-uri 'self';
+                 form-action 'self' https://forms.gle;
+                 block-all-mixed-content">
 
-  <!-- emfont: 字型載入 -->
-<script type="module">
+    <script type="module">
 import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
 import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
 const DOMPurify = createDOMPurify(window);
 
 marked.use({
-  extensions: [{
-    name: 'callouts',
-    level: 'block',
-    start(src) { return src.match(/\[!|\:\:\:/)?.index; },
-    tokenizer(src) {
-      const rule = /^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
-      const match = rule.exec(src);
-      if (match) {
-        return {
-          type: 'callout',
-          raw: match[0],
-          kind: match[1] || match[2],
-          text: match[3].trim()
-        };
-      }
-    },
-    renderer(token) {
-      return `<div class="callout ${token.kind.toLowerCase()}">
-                <strong>${token.kind}</strong><br>${marked.parse(token.text)}
-              </div>`;
-    }
-  }]
+  extensions: [{
+    name: 'callouts',
+    level: 'block',
+    start(src) { return src.match(/\[!|\:\:\:/)?.index; },
+    tokenizer(src) {
+      const rule = /^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+      const match = rule.exec(src);
+      if (match) {
+        return {
+          type: 'callout',
+          raw: match[0],
+          kind: match[1] || match[2],
+          text: match[3].trim()
+        };
+      }
+    },
+    renderer(token) {
+      return `<div class="callout ${token.kind.toLowerCase()}">
+                <strong>${token.kind}</strong><br>${marked.parse(token.text)}
+              </div>`;
+    }
+  }]
 });
 
 const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
-const CACHE_KEY  = 'md:recruit:v1';
-const CACHE_TTL  = 60 * 60 * 1000;
+const CACHE_KEY  = 'md:recruit:v1';
+const CACHE_TTL  = 60 * 60 * 1000;
 
-const $root     = document.getElementById('md-root');
-const $toc      = document.getElementById('toc');
+const $root     = document.getElementById('md-root');
+const $toc      = document.getElementById('toc');
 const $fallback = document.getElementById('fallback');
-const $refresh  = document.getElementById('refresh');
+const $refresh  = document.getElementById('refresh');
 
 const slugify = (txt) => txt
-  .toLowerCase()
-  .replace(/[^\p{L}\p{N}\s-]/gu,'')
-  .trim()
-  .replace(/\s+/g,'-');
+  .toLowerCase()
+  .replace(/[^\p{L}\p{N}\s-]/gu,'')
+  .trim()
+  .replace(/\s+/g,'-');
 
 function buildTOC(container){
-  const heads = container.querySelectorAll('h2, h3');
-  if(!heads.length){ $toc.innerHTML = '<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; return; }
+  const heads = container.querySelectorAll('h2, h3');
+  if(!heads.length){ $toc.innerHTML = '<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; return; }
 
-  const ul = document.createElement('ul');
-  ul.style.listStyle = 'none';
-  ul.style.paddingLeft = '0';
+  const ul = document.createElement('ul');
+  ul.style.listStyle = 'none';
+  ul.style.paddingLeft = '0';
 
-  heads.forEach(h => {
-    const level = h.tagName === 'H2' ? 2 : 3;
-    if(!h.id) h.id = slugify(h.textContent);
-    const li = document.createElement('li');
-    li.style.margin = level === 2 ? '.3rem 0' : '.2rem 0 .2rem 1rem';
-    const a = document.createElement('a');
-    a.href = `#${h.id}`;
-    a.textContent = h.textContent;
-    a.className = 'emfont-CEFFontsCJKMono';
-    li.appendChild(a);
-    ul.appendChild(li);
-  });
-  $toc.replaceChildren(ul);
+  heads.forEach(h => {
+    const level = h.tagName === 'H2' ? 2 : 3;
+    if(!h.id) h.id = slugify(h.textContent);
+    const li = document.createElement('li');
+    li.style.margin = level === 2 ? '.3rem 0' : '.2rem 0 .2rem 1rem';
+    const a = document.createElement('a');
+    a.href = `#${h.id}`;
+    a.textContent = h.textContent;
+    a.className = 'emfont-CEFFontsCJKMono';
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+  $toc.replaceChildren(ul);
 }
 
 function render(md){
-  const raw = marked.parse(md, { mangle:false, headerIds:false });
-  const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }});
-  $root.innerHTML = clean;
-  $root.setAttribute('aria-busy', 'false');
-  buildTOC($root);
+  const raw = marked.parse(md, { mangle:false, headerIds:false });
+  const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }});
+  $root.innerHTML = clean;
+  $root.setAttribute('aria-busy', 'false');
+  buildTOC($root);
 }
 
 function readCache(){
-  try{
-    const raw = localStorage.getItem(CACHE_KEY);
-    if(!raw) return null;
-    const { ts, md } = JSON.parse(raw);
-    if(Date.now() - ts < CACHE_TTL) return md;
-  }catch{}
-  return null;
+  try{
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const { ts, md } = JSON.parse(raw);
+    if(Date.now() - ts < CACHE_TTL) return md;
+  }catch{}
+  return null;
 }
 
 function writeCache(md){
-  try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md })); }catch{}
+  try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md })); }catch{}
 }
 
 async function loadMarkdown({ refresh = false } = {}){
-  $root.setAttribute('aria-busy', 'true');
+  $root.setAttribute('aria-busy', 'true');
 
-  if(!refresh){
-    const cached = readCache();
-    if(cached){ render(cached); return; }
-  }
+  if(!refresh){
+    const cached = readCache();
+    if(cached){ render(cached); return; }
+  }
 
-  try{
-    const res = await fetch(HACKMD_URL, { cache:'no-store' });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const md = await res.text();
-    render(md);
-    writeCache(md);
-    $fallback.hidden = true;
-  }catch(err){
-    console.warn('HackMD 取用失敗：', err);
-    $fallback.hidden = false;
-    $root.setAttribute('aria-busy', 'false');
-  }
+  try{
+    const res = await fetch(HACKMD_URL, { cache:'no-store' });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const md = await res.text();
+    render(md);
+    writeCache(md);
+    $fallback.hidden = true;
+  }catch(err){
+    console.warn('HackMD 取用失敗：', err);
+    $fallback.hidden = false;
+    $root.setAttribute('aria-busy', 'false');
+  }
 }
 
 $refresh.addEventListener('click', () => {
-  try{ localStorage.removeItem(CACHE_KEY); }catch{}
-  loadMarkdown({ refresh:true });
+  try{ localStorage.removeItem(CACHE_KEY); }catch{}
+  loadMarkdown({ refresh:true });
 });
 
 loadMarkdown();
