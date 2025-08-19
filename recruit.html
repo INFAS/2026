@@ -22,6 +22,26 @@
     .task-list-item{list-style:none}
     .task-list-item input{margin-right:.5rem}
     .callout .title{display:block;font-weight:700;margin-bottom:.25rem}
+
+    /* Callout */
+    .callout {border-left:4px solid; border-radius:6px; padding:.8rem 1rem; margin:1rem 0; background-color:#f9f9f9;}
+    .callout .title{font-weight:700; margin-bottom:.3rem; display:block;}
+    .callout.note { border-color: #2d7df6; background-color: #f0f5ff; color: #1e3a8a; }
+    .callout.tip { border-color: #059669; background-color: #f0fdf4; color: #065f46; }
+    .callout.important { border-color: #dc2626; background-color: #fef2f2; color: #991b1b; }
+    .callout.warning { border-color: #f97316; background-color: #fff7ed; color: #b45309; }
+    .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
+    .callout img, .callout iframe, .callout video, .callout audio { max-width:100%; height:auto; }
+
+    /* TOC 展開收合動畫 */
+    #toc ul ul {
+      overflow: hidden;
+      max-height: 1000px;
+      transition: max-height 0.3s ease;
+    }
+    #toc ul ul.collapsed {
+      max-height: 0;
+    }
   </style>
 
   <!-- CSP -->
@@ -31,8 +51,11 @@
                  style-src 'self' 'unsafe-inline';
                  script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
                  font-src 'self' https://font.emtech.cc data:;
+                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+                 font-src 'self' data:;
                  connect-src 'self' https://hackmd.io;
                  frame-src https://hackmd.io https://forms.gle https://docs.google.com;
+                 frame-src 'self' https://hackmd.io https://www.youtube.com https://player.vimeo.com https://docs.google.com https://forms.gle;
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
 </head>
@@ -85,6 +108,7 @@
         <article id="md-root" aria-live="polite" aria-busy="true">
           <!-- HackMD 內容會渲染在這裡 -->
         </article>
+        <article id="md-root" aria-live="polite" aria-busy="true"></article>
       </div>
 
       <div class="container" id="fallback" hidden>
@@ -135,6 +159,9 @@ DOMPurify.setConfig({
   ADD_TAGS: ['iframe', 'video', 'audio', 'source'],
   ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'controls', 'autoplay', 'muted', 'loop'],
   USE_PROFILES: { html: true }
+  ADD_TAGS: ['iframe','video','audio','source'],
+  ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop'],
+  USE_PROFILES: { html:true }
 });
 
 marked.use({
@@ -148,8 +175,17 @@ marked.use({
       if (match) {
         return { type: 'callout', raw: match[0], kind: match[1] || match[2], text: match[3].trim() };
       }
+  extensions:[{
+    name:'callouts',
+    level:'block',
+    start(src){ return src.match(/\[!|\:\:\:/)?.index; },
+    tokenizer(src){
+      const rule=/^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+      const match=rule.exec(src);
+      if(match){ return { type:'callout', raw:match[0], kind:match[1]||match[2], text:match[3].trim() }; }
     },
     renderer(token) {
+    renderer(token){
       return `<div class="callout ${token.kind.toLowerCase()}"><strong>${token.kind}</strong><br>${marked.parse(token.text)}</div>`;
     }
   }]
@@ -158,13 +194,21 @@ marked.use({
 const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
 const CACHE_KEY  = 'md:recruit:v1';
 const CACHE_TTL  = 60 * 60 * 1000;
+const HACKMD_URL='https://hackmd.io/@INFAS/2026-recruit/download';
+const CACHE_KEY='md:recruit:v1';
+const CACHE_TTL=60*60*1000;
 
 const $root     = document.getElementById('md-root');
 const $toc      = document.getElementById('toc');
 const $fallback = document.getElementById('fallback');
 const $refresh  = document.getElementById('refresh');
+const $root=document.getElementById('md-root');
+const $toc=document.getElementById('toc');
+const $fallback=document.getElementById('fallback');
+const $refresh=document.getElementById('refresh');
 
 const slugify = txt => txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
+const slugify=txt=>txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
 
 function buildTOC(container){
   const heads = container.querySelectorAll('h2, h3');
@@ -175,8 +219,65 @@ function buildTOC(container){
     const li=document.createElement('li'); li.style.margin=level===2?'.3rem 0':'.2rem 0 .2rem 1rem';
     const a=document.createElement('a'); a.href=`#${h.id}`; a.textContent=h.textContent; a.className='emfont-CEFFontsCJKMono';
     li.appendChild(a); ul.appendChild(li);
+  const heads=container.querySelectorAll('h2,h3');
+  if(!heads.length){ 
+    $toc.innerHTML='<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; 
+    return; 
+  }
+
+  const ul=document.createElement('ul'); 
+  ul.style.listStyle='none'; 
+  ul.style.paddingLeft='0';
+  let currentH2Li = null;
+
+  heads.forEach(h=>{
+    if(!h.id) h.id = slugify(h.textContent);
+    const level = h.tagName==='H2'?2:3;
+
+    if(level===2){
+      const li=document.createElement('li'); 
+      li.style.margin='.3rem 0';
+      const a=document.createElement('a'); 
+      a.href=`#${h.id}`; 
+      a.textContent=h.textContent; 
+      a.className='emfont-CEFFontsCJKMono';
+      a.style.cursor='pointer';
+      
+      const subUl=document.createElement('ul'); 
+      subUl.style.listStyle='none'; 
+      subUl.style.paddingLeft='1rem';
+      subUl.style.display='block'; // 初始展開
+      
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        subUl.classList.toggle('collapsed'); // 動畫切換
+        document.getElementById(h.id).scrollIntoView({behavior:'smooth'});
+      });
+
+      li.appendChild(a);
+      li.appendChild(subUl);
+      ul.appendChild(li);
+      currentH2Li = subUl;
+
+    } else if(level===3 && currentH2Li){
+      const li=document.createElement('li'); 
+      li.style.margin='.2rem 0';
+      const a=document.createElement('a'); 
+      a.href=`#${h.id}`; 
+      a.textContent=h.textContent; 
+      a.className='emfont-CEFFontsCJKMono';
+      li.appendChild(a);
+      currentH2Li.appendChild(li);
+    }
   });
+
   $toc.replaceChildren(ul);
+}
+
+function autoResizeMedia(container){
+  container.querySelectorAll('iframe').forEach(el=>{el.style.width='100%'; el.style.height=`${el.clientWidth*9/16}px`; el.style.maxWidth='100%';});
+  container.querySelectorAll('video').forEach(el=>{el.style.width='100%'; el.style.height='auto'; el.controls=true;});
+  container.querySelectorAll('audio').forEach(el=>{el.style.width='100%'; el.controls=true;});
 }
 
 function render(md){
