@@ -13,7 +13,7 @@
   <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
   <meta property="og:image" content="/assets/img/og-cover.png">
   <meta property="og:locale" content="zh_TW">
-  
+
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="INFAS 2026 招募專區">
@@ -29,12 +29,12 @@
   <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- CSP -->
+  <!-- CSP：強化，使用 nonce（替換 {{NONCE}} 為後端生成的安全隨機值） -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' data: https:;
                  style-src 'self' 'unsafe-inline';
-                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'nonce-{{NONCE}}';
                  font-src 'self' data:;
                  connect-src 'self' https://hackmd.io;
                  frame-src 'self' https://hackmd.io https://www.youtube.com https://player.vimeo.com https://docs.google.com https://forms.gle;
@@ -50,7 +50,7 @@
     body { font-family: system-ui, sans-serif; line-height: 1.6; background: #f9fafb; color: #111827; }
     a { text-decoration: none; color: #2563eb; }
     a:hover { color: #1d4ed8; }
-    
+
     /* Hero */
     .hero { background: linear-gradient(135deg, #2d7df6, #9333ea); color: #fff; padding: 4rem 1rem; text-align: center; position: relative; }
     .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
@@ -61,28 +61,27 @@
     .btn-primary:hover { background: #f0f5ff; transform: scale(1.05); }
     .btn-secondary { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid #fff; }
     .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-    
+
     /* Layout */
     .container { max-width: 1200px; margin: auto; padding: 2rem; }
     .section { padding: 2rem 1rem; }
     #content { display: grid; grid-template-columns: 280px 1fr; gap: 2rem; }
     @media(max-width: 900px) { #content { grid-template-columns: 1fr; } }
-    
+
     /* TOC */
     #toc ul { list-style: none; padding: 0; }
     #toc a { display: block; padding: 0.3rem 0; color: #374151; transition: color 0.3s; }
     #toc a:hover { color: #2563eb; }
-    
+
     /* Callouts */
     .callout { border-left: 4px solid; border-radius: 6px; padding: 1rem; margin: 1rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
-    .callout::before { font-family: "Material Icons"; font-size: 1.5rem; }
     .callout.note { border-color: #2d7df6; background: #f0f5ff; color: #1e3a8a; }
     .callout.note::before { content: "ℹ️"; }
     .callout.tip { border-color: #059669; background: #f0fdf4; color: #065f46; }
     .callout.tip::before { content: "💡"; }
     .callout.warning { border-color: #f97316; background: #fff7ed; color: #b45309; }
     .callout.warning::before { content: "⚠️"; }
-    
+
     /* Loading skeleton */
     #md-root[aria-busy="true"]::after {
       content: "載入中…";
@@ -92,7 +91,7 @@
       color: #9ca3af;
       padding: 2rem;
     }
-    
+
     /* Footer */
     footer { background: #111827; color: #f9fafb; padding: 2rem 1rem; }
     .footer-inner { max-width: 1200px; margin: auto; }
@@ -140,6 +139,13 @@
       <p>⚠️ 無法即時抓取 HackMD 內容，以下為備援嵌入：</p>
       <iframe src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="500" loading="lazy" style="border:0"></iframe>
     </div>
+
+    <!-- SEO fallback -->
+    <noscript>
+      <p>本頁需啟用 JavaScript 才能顯示最新內容。您可以直接在
+        <a href="https://hackmd.io/@INFAS/2026-recruit" rel="noopener">HackMD</a> 查看招募資訊。
+      </p>
+    </noscript>
   </main>
 
   <!-- FOOTER -->
@@ -161,12 +167,18 @@
     </div>
   </footer>
 
-  <script type="module">
+  <script type="module" nonce="{{NONCE}}">
     import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
     import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
     const DOMPurify = createDOMPurify(window);
     DOMPurify.setConfig({ ADD_TAGS: ['iframe','video','audio','source'], ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop'], USE_PROFILES: { html:true } });
+
+    // 改進 slugify：支援中文、英文、數字
+    const slugify = txt => {
+      const base = txt.normalize('NFKD').replace(/\p{Diacritic}/gu,'');
+      return base.replace(/[\s\p{P}]+/gu,'-').replace(/^-+|-+$/g,'').toLowerCase();
+    };
 
     marked.use({
       extensions:[{
@@ -186,8 +198,6 @@
     const $toc=document.getElementById('toc');
     const $fallback=document.getElementById('fallback');
     const $refresh=document.getElementById('refresh');
-
-    const slugify=txt=>txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
 
     function buildTOC(container){
       const heads=container.querySelectorAll('h2,h3');
@@ -237,4 +247,3 @@
   </script>
 </body>
 </html>
-
