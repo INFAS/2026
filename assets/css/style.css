@@ -128,67 +128,118 @@ footer{background:#0f172a;color:#cbd5e1}
 }
 /* === 基底樣式 === */
 /* Hide label for :::callouts (but keep styles from global CSS) */
+/* === Callout 區塊樣式 === */
 .callout .title {
-  display:block;
-  font-weight:700;
-  margin-bottom:.25rem;
+  display: block;
+  font-weight: 700;
+  margin-bottom: .25em;
 }
 
-.markdown-alert {
-  border-radius: 8px;
+/* 不同類型 callout 配色 */
+.callout.tip {
   padding: 12px 16px;
   margin: 1em 0;
   border-left: 6px solid;
   background: #f9f9f9;
-}
-
-/* [!note] */
-.markdown-alert-note {
-  border-color: #4a90e2;
-  background: #eef6fc;
-  color: #2c5282;
-}
-
-/* [!tip] */
-.markdown-alert-tip {
   border-color: #2ecc71;
-  background: #f0fdf4;
-  color: #166534;
+  color: #000000;
 }
 
-/* [!important] */
-.markdown-alert-important {
-  border-color: #f39c12;
-  background: #fffaf0;
-  color: #7c2d12;
+.callout.tip .title {
+  color: #2ecc71;
 }
 
-/* ========== ::: Alerts (info, danger, success) ========== */
+.callout.note {
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-left: 6px solid;
+  background: #f9f9f9;
+  border-color: #4a90e2;
+  color: #000000;
+}
 
-.alert {
+.callout.note .title {
+  color: #4a90e2;
+}
+
+.callout.important {
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-left: 6px solid;
+  background: #f9f9f9;
+  border-color: #564DFF;
+  color: #000000;
+}
+
+.callout.important .title {
+  color: #564DFF;
+}
+
+.callout.info {
   border-radius: 8px;
   padding: 12px 16px;
   margin: 1em 0;
   border-left: 6px solid;
-}
-
-/* :::info */
-.alert-info {
-  border-color: #3498db;
+  border-color: #3498db99;
   background: #ecf6fb;
   color: #1d4e89;
 }
 
-/* :::danger */
-.alert-danger {
-  border-color: #e74c3c;
+.callout.danger {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-left: 6px solid;
+  border-color: #e74c3c99;
   background: #fdf2f2;
   color: #7f1d1d;
 }
 
-/* :::success */
-.alert-success {
-  border-color: #2ecc71;
+.callout.success {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-left: 6px solid;
+  border-color: #2ecc7199;
   background: #f0fdf4;
   color: #166534;
+}
+
+.callout.warning {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 1em 0;
+  border-left: 6px solid;
+  border-color: #f59e0b;
+  background: #fef3c799;
+  color: #f59e0b;
+}
+
+.markdown-body table {
+  border-collapse: collapse;   /* 框線合併 */
+  width: 100%;                /* 讓表格撐滿容器 */
+  margin: 1em 0;
+}
+.markdown-body{
+  max-width:unset
+}
+.markdown-body img{
+  max-width:100%;height:auto
+}
+.task-list-item{
+  list-style:none
+}
+.task-list-item input{
+  margin-right:.5rem
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid #ccc;     /* 框線顏色 */
+  padding: 8px 12px;          /* 內距 */
+  text-align: left;           /* 文字靠左 */
+}
+
+.markdown-body th {
+  background-color: #f5f5f5;  /* 表頭底色 */
+  font-weight: bold;
 }

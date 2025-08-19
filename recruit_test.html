@@ -16,16 +16,6 @@
   <!-- Use site's global stylesheet per user's request -->
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- Minimal extra styles only for markdown reset that are not in style.css -->
-  <style>
-    .markdown-body{max-width:unset}
-    .markdown-body img{max-width:100%;height:auto}
-    .task-list-item{list-style:none}
-    .task-list-item input{margin-right:.5rem}
-    /* Hide label for :::callouts (but keep styles from global CSS) */
-    .callout .title{display:block;font-weight:700;margin-bottom:.25rem}
-  </style>
-
   <!-- CSP -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
@@ -111,7 +101,7 @@
       <div class="foot-grid">
         <div>
           <strong>Information Association of Student（INFAS）</strong>
-          <p style="margin:.5rem 0 0 0">中學生資訊年會｜Since 2016</p>
+          <p style="margin:.5rem 0 0 0">中學生資訊年會｜Since 2018</p>
           <div class="foot-past">  
             <p><a href="../2018" aria-disabled="true">2018</a> | <a href="../2017" aria-disabled="true">2017</a> | <a href="../2016" aria-disabled="true">2016</a></p>
           </div>
@@ -156,69 +146,53 @@
     // Extension: admonitions ([!NOTE] + :::info)
     // For :::kind blocks we DO NOT show the "kind" label (per user request).
     const admonitionExt = {
-  name: 'admonition',
-  level: 'block',
-  start(src){
-    const m = /(?:^|\n)\s*(?:>\s*)?\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]/i.exec(src);
-    return m ? m.index : undefined;
-  },
-  tokenizer(src){
-    // Case A: Blockquote form
-    const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\n((?:\s*>.*\n)*)/i;
-    const mBQ = reBQ.exec(src);
-    if(mBQ){
-      const raw = mBQ[0];
-      const cleaned = (mBQ[3]||'')
-        .split(/\n/)
-        .map(l => l.replace(/^\s*>\s?/, ''))
-        .join('\n');
-      return {
-        type: 'admonition',
-        raw,
-        kind: mBQ[1].toLowerCase(),
-        title: (mBQ[2]||'').trim(),
-        text: cleaned.trim(),
-        showLabel: true
-      };
-    }
-    // Case B: Plain form
-    const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\n+((?:.*\n)*?)(?=(?:\n{2,}|$))/i;
-    const mPlain = rePlain.exec(src);
-    if(mPlain){
-      return {
-        type: 'admonition',
-        raw: mPlain[0],
-        kind: mPlain[1].toLowerCase(),
-        title: (mPlain[2]||'').trim(),
-        text: (mPlain[3]||'').trim(),
-        showLabel: true
-      };
-    }
-    // Case C: :::kind ... ::: form
-    const re2 = /^:::(\w+)\n+((?:.*\n)*?):::\s*(?:\n+|$)/;
-    const m2 = re2.exec(src);
-    if(m2){
-      return {
-        type: 'admonition',
-        raw: m2[0],
-        kind: m2[1].toLowerCase(),
-        title: '',
-        text: (m2[2]||'').trim(),
-        showLabel: false
-      };
-    }
-    return;
-  },
-  renderer(token){
-    const inner = marked.parse(token.text);
-    const title = token.showLabel && (token.title || token.kind.charAt(0).toUpperCase() + token.kind.slice(1));
-    return `<div class="callout ${token.kind}">
-      ${title ? `<span class="title">${title}</span>` : ''}
-      ${inner}
-    </div>`;
-  }
-};
+      name: 'admonition',
+      level: 'block',
+      start(src){
+        // 只要出現 [!Kind] 或 ::: 就觸發
+        const m = /(?:^|\n)\s*(?:>\s*)?\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|(?:^|\n)\s*:::/i.exec(src);
+        return m ? m.index : undefined;
+      },
+      tokenizer(src){
+        // A) Blockquote 形式：> [!Kind] [可選**標題**] + 後續每行仍以 > 開頭
+        const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n((?:\s*>.*(?:\r?\n|$))*)/i;
+        const mBQ = reBQ.exec(src);
+        if (mBQ){
+          const raw = mBQ[0];
+          const cleaned = (mBQ[3]||'')
+            .split(/\r?\n/)
+            .map(l => l.replace(/^\s*>\s?/, ''))
+            .join('\n');
+          return { type:'admonition', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim(), showLabel:true };
+        }
+
+        // B) 平鋪形式：[!Kind] [可選**標題**]（下一段為內容）
+        const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n+((?:.*(?:\r?\n|$))*?)(?=(?:\r?\n{2,}|$))/i;
+        const mPlain = rePlain.exec(src);
+        if (mPlain){
+          return { type:'admonition', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim(), showLabel:true };
+        }
+
+        // C) :::kind [可選同行標題] + 內容 + :::
+        const re3 = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
+        const m3 = re3.exec(src);
+        if (m3){
+          return { type:'admonition', raw:m3[0], kind:m3[1].toLowerCase(), title:(m3[2]||'').trim(), text:(m3[3]||'').trim(), showLabel:true };
+        }
+      },
+      renderer(token){
+        const inner = marked.parse(token.text);
+        // 僅在「有自訂標題」時顯示，否則不顯示 Danger/Info 等字樣
+        const title = token.title ? `<span class="title">${token.title}</span>` : '';
+        return `<div class="callout ${token.kind}">
+          ${title}
+          ${inner}
+        </div>`;
+      }
+    };
     marked.use({ extensions:[admonitionExt] });
+
+
 
     const HACKMD_URL = 'https://hackmd.io/@INFAS/SylYomltgx/download';
     const CACHE_KEY  = 'md:recruit:v3';
