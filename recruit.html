@@ -1,249 +1,317 @@
 <!doctype html>
-<html lang="zh-Hant-TW" dir="ltr">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
   <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。">
   <meta name="theme-color" content="#2C2C2C" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- SEO: Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="INFAS 2026 招募專區">
   <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
   <meta property="og:image" content="/assets/img/og-cover.png">
   <meta property="og:locale" content="zh_TW">
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="INFAS 2026 招募專區">
-  <meta name="twitter:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。">
-  <meta name="twitter:image" content="/assets/img/og-cover.png">
-
-  <!-- Resource Hints -->
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="https://unpkg.com">
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-
   <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- CSP：強化，使用 nonce（替換 {{NONCE}} 為後端生成的安全隨機值） -->
+  <!-- 額外 markdown reset 樣式 -->
+  <style>
+    .markdown-body{max-width:unset}
+    .markdown-body img{max-width:100%;height:auto}
+    .task-list-item{list-style:none}
+    .task-list-item input{margin-right:.5rem}
+    .callout .title{display:block;font-weight:700;margin-bottom:.25rem}
+
+    /* Callout */
+    .callout {border-left:4px solid; border-radius:6px; padding:.8rem 1rem; margin:1rem 0; background-color:#f9f9f9;}
+    .callout .title{font-weight:700; margin-bottom:.3rem; display:block;}
+    .callout.note { border-color: #2d7df6; background-color: #f0f5ff; color: #1e3a8a; }
+    .callout.tip { border-color: #059669; background-color: #f0fdf4; color: #065f46; }
+    .callout.important { border-color: #dc2626; background-color: #fef2f2; color: #991b1b; }
+    .callout.warning { border-color: #f97316; background-color: #fff7ed; color: #b45309; }
+    .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
+    .callout img, .callout iframe, .callout video, .callout audio { max-width:100%; height:auto; }
+
+    /* TOC 展開收合動畫 */
+    #toc ul ul {
+      overflow: hidden;
+      max-height: 1000px;
+      transition: max-height 0.3s ease;
+    }
+    #toc ul ul.collapsed {
+      max-height: 0;
+    }
+  </style>
+
+  <!-- CSP -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' data: https:;
                  style-src 'self' 'unsafe-inline';
-                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'nonce-{{NONCE}}';
+                 script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
+                 font-src 'self' https://font.emtech.cc data:;
+                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
                  font-src 'self' data:;
                  connect-src 'self' https://hackmd.io;
+                 frame-src https://hackmd.io https://forms.gle https://docs.google.com;
                  frame-src 'self' https://hackmd.io https://www.youtube.com https://player.vimeo.com https://docs.google.com https://forms.gle;
-                 object-src 'none';
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
-
-  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
-
-  <style>
-    /* Reset & base */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; line-height: 1.6; background: #f9fafb; color: #111827; }
-    a { text-decoration: none; color: #2563eb; }
-    a:hover { color: #1d4ed8; }
-
-    /* Hero */
-    .hero { background: linear-gradient(135deg, #2d7df6, #9333ea); color: #fff; padding: 4rem 1rem; text-align: center; position: relative; }
-    .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .hero p { font-size: 1.25rem; margin-bottom: 1.5rem; }
-    .cta-row { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-    .btn { padding: 0.8rem 1.5rem; border-radius: 9999px; font-weight: 600; transition: all 0.3s ease; }
-    .btn-primary { background: #fff; color: #2d7df6; }
-    .btn-primary:hover { background: #f0f5ff; transform: scale(1.05); }
-    .btn-secondary { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid #fff; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
-
-    /* Layout */
-    .container { max-width: 1200px; margin: auto; padding: 2rem; }
-    .section { padding: 2rem 1rem; }
-    #content { display: grid; grid-template-columns: 280px 1fr; gap: 2rem; }
-    @media(max-width: 900px) { #content { grid-template-columns: 1fr; } }
-
-    /* TOC */
-    #toc ul { list-style: none; padding: 0; }
-    #toc a { display: block; padding: 0.3rem 0; color: #374151; transition: color 0.3s; }
-    #toc a:hover { color: #2563eb; }
-
-    /* Callouts */
-    .callout { border-left: 4px solid; border-radius: 6px; padding: 1rem; margin: 1rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
-    .callout.note { border-color: #2d7df6; background: #f0f5ff; color: #1e3a8a; }
-    .callout.note::before { content: "ℹ️"; }
-    .callout.tip { border-color: #059669; background: #f0fdf4; color: #065f46; }
-    .callout.tip::before { content: "💡"; }
-    .callout.warning { border-color: #f97316; background: #fff7ed; color: #b45309; }
-    .callout.warning::before { content: "⚠️"; }
-
-    /* Loading skeleton */
-    #md-root[aria-busy="true"]::after {
-      content: "載入中…";
-      display: block;
-      text-align: center;
-      font-size: 1.2rem;
-      color: #9ca3af;
-      padding: 2rem;
-    }
-
-    /* Footer */
-    footer { background: #111827; color: #f9fafb; padding: 2rem 1rem; }
-    .footer-inner { max-width: 1200px; margin: auto; }
-    .foot-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.5rem; }
-    .foot-links a { display: block; color: #d1d5db; margin: 0.3rem 0; }
-    .foot-links a:hover { color: #fff; }
-    .copyright { margin-top: 1rem; text-align: center; font-size: 0.875rem; }
-  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
 
-  <!-- HEADER -->
   <header class="nav" role="banner">
     <div class="nav-inner">
       <a class="brand" href="index.html" aria-label="INFAS 首頁">
-        <img src="./favicon256.png" alt="INFAS logo" width="36" height="36" />
-        <strong>INFAS 2026</strong>
+        <img src="./favicon256.png" alt="INFAS logo" class="logo" width="36" height="36" />
+        <strong class="emfont-CEFFontsCJKMono">INFAS 2026</strong>
       </a>
+      <nav aria-label="主導覽">
+        <div class="nav-links emfont-CEFFontsCJKMono">
+          <a href="about.html">關於</a>
+          <a href="recruit.html">招募</a>
+          <a href="sponsor.html">贊助</a>
+          <a href="policy/privacy.html">隱私權</a>
+          <a href="index.html#contact">聯絡</a>
+        </div>
+      </nav>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>加入 INFAS 2026 籌備團隊</h1>
-    <p>職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#content">查看招募資訊</a>
-      <a class="btn btn-secondary" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
-    </div>
-  </section>
+  <main id="main">
+    <section class="hero" aria-label="招募">
+      <div class="hero-inner">
+        <span class="badge emfont-CEFFontsCJKMono"><span class="badge-dot" aria-hidden="true"></span>招募專區 · 內容即時同步</span>
+        <div>
+          <h1 class="emfont-CEFFontsCJKMono">加入 INFAS 2026 籌備團隊</h1>
+          <p class="emfont-CEFFontsCJKMono">職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
+          <div class="cta-row">
+            <a class="btn btn-primary emfont-CEFFontsCJKMono" href="#content">查看招募資訊</a>
+            <a class="btn btn-secondary emfont-CEFFontsCJKMono" id="open-hackmd" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <!-- CONTENT -->
-  <main id="main" class="section">
-    <div class="container" id="content">
-      <aside>
-        <h2>目錄</h2>
-        <nav id="toc"></nav>
-        <button id="refresh" class="btn btn-secondary" type="button">重新整理內容</button>
-      </aside>
-      <article id="md-root" aria-live="polite" aria-busy="true"></article>
-    </div>
+    <section class="section" aria-label="招募內容">
+      <div class="container" id="content" style="display:grid;grid-template-columns:260px 1fr;gap:2rem;">
+        <aside aria-label="頁面目錄" style="position:sticky;top:80px;align-self:start">
+          <h2 class="emfont-CEFFontsCJKMono" style="margin-top:0">目錄</h2>
+          <nav id="toc" class="foot-links" aria-label="章節導覽"></nav>
+          <div style="margin-top:1rem">
+            <button id="refresh" class="btn btn-secondary emfont-CEFFontsCJKMono" type="button">重新整理內容</button>
+          </div>
+        </aside>
 
-    <div class="container" id="fallback" hidden>
-      <p>⚠️ 無法即時抓取 HackMD 內容，以下為備援嵌入：</p>
-      <iframe src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="500" loading="lazy" style="border:0"></iframe>
-    </div>
+        <article id="md-root" aria-live="polite" aria-busy="true">
+          <!-- HackMD 內容會渲染在這裡 -->
+        </article>
+        <article id="md-root" aria-live="polite" aria-busy="true"></article>
+      </div>
 
-    <!-- SEO fallback -->
-    <noscript>
-      <p>本頁需啟用 JavaScript 才能顯示最新內容。您可以直接在
-        <a href="https://hackmd.io/@INFAS/2026-recruit" rel="noopener">HackMD</a> 查看招募資訊。
-      </p>
-    </noscript>
+      <div class="container" id="fallback" hidden>
+        <div class="card">
+          <p class="emfont-CEFFontsCJKMono">⚠️ 無法即時抓取 HackMD 內容，以下為備援嵌入：</p>
+          <div style="aspect-ratio:16/9;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
+            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="100%" style="border:0"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
       <div class="foot-grid">
         <div>
-          <h3>Information Association of Student（INFAS）</h3>
-          <p>中學生資訊年會｜Since 2016</p>
+          <h3 class="emfont-CEFFontsCJKMono">Information Association of Student（INFAS）</h3>
+          <p class="emfont-CEFFontsCJKMono">中學生資訊年會｜Since 2016</p>
         </div>
         <div class="foot-links">
-          <h4>網站</h4>
+          <h4 class="emfont-CEFFontsCJKMono">網站</h4>
           <a href="index.html">首頁</a>
           <a href="recruit.html">招募</a>
           <a href="sponsor.html">贊助</a>
+          <a href="policy/privacy.html">隱私權政策</a>
+        </div>
+        <div class="foot-links">
+          <h4 class="emfont-CEFFontsCJKMono">社群</h4>
+          <a href="#" aria-disabled="true">Facebook（稍後公布）</a>
+          <a href="#" aria-disabled="true">Instagram（稍後公布）</a>
+          <a href="https://hackmd.io/@INFAS" target="_blank" rel="noopener">HackMD</a>
         </div>
       </div>
-      <div class="copyright">© 2026 INFAS. All rights reserved.</div>
+      <div class="copyright emfont-CEFFontsCJKMono">© 2026 INFAS. All rights reserved.</div>
     </div>
   </footer>
 
-  <script type="module" nonce="{{NONCE}}">
-    import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
-    import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
+  <script type="module">
+import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
+import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
-    const DOMPurify = createDOMPurify(window);
-    DOMPurify.setConfig({ ADD_TAGS: ['iframe','video','audio','source'], ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop'], USE_PROFILES: { html:true } });
+const DOMPurify = createDOMPurify(window);
+DOMPurify.setConfig({
+  ADD_TAGS: ['iframe', 'video', 'audio', 'source'],
+  ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling', 'controls', 'autoplay', 'muted', 'loop'],
+  USE_PROFILES: { html: true }
+  ADD_TAGS: ['iframe','video','audio','source'],
+  ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop'],
+  USE_PROFILES: { html:true }
+});
 
-    // 改進 slugify：支援中文、英文、數字
-    const slugify = txt => {
-      const base = txt.normalize('NFKD').replace(/\p{Diacritic}/gu,'');
-      return base.replace(/[\s\p{P}]+/gu,'-').replace(/^-+|-+$/g,'').toLowerCase();
-    };
+marked.use({
+  extensions: [{
+    name: 'callouts',
+    level: 'block',
+    start(src) { return src.match(/\[!|\:\:\:/)?.index; },
+    tokenizer(src) {
+      const rule = /^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+      const match = rule.exec(src);
+      if (match) {
+        return { type: 'callout', raw: match[0], kind: match[1] || match[2], text: match[3].trim() };
+      }
+  extensions:[{
+    name:'callouts',
+    level:'block',
+    start(src){ return src.match(/\[!|\:\:\:/)?.index; },
+    tokenizer(src){
+      const rule=/^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s;
+      const match=rule.exec(src);
+      if(match){ return { type:'callout', raw:match[0], kind:match[1]||match[2], text:match[3].trim() }; }
+    },
+    renderer(token) {
+    renderer(token){
+      return `<div class="callout ${token.kind.toLowerCase()}"><strong>${token.kind}</strong><br>${marked.parse(token.text)}</div>`;
+    }
+  }]
+});
 
-    marked.use({
-      extensions:[{
-        name:'callouts', level:'block', start(src){ return src.match(/\[!|\:\:\:/)?.index; },
-        tokenizer(src){ const rule=/^(?:\[\!(\w+)\]|:::(\w+))(.*?)(?:\n:::\s*$)?/s; const match=rule.exec(src);
-          if(match){ return { type:'callout', raw:match[0], kind:match[1]||match[2], text:match[3].trim() }; }
-        },
-        renderer(token){ return `<div class="callout ${token.kind.toLowerCase()}">${marked.parse(token.text)}</div>`; }
-      }]
-    });
+const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
+const CACHE_KEY  = 'md:recruit:v1';
+const CACHE_TTL  = 60 * 60 * 1000;
+const HACKMD_URL='https://hackmd.io/@INFAS/2026-recruit/download';
+const CACHE_KEY='md:recruit:v1';
+const CACHE_TTL=60*60*1000;
 
-    const HACKMD_URL='https://hackmd.io/@INFAS/2026-recruit/download';
-    const CACHE_KEY='md:recruit:v1';
-    const CACHE_TTL=60*60*1000;
+const $root     = document.getElementById('md-root');
+const $toc      = document.getElementById('toc');
+const $fallback = document.getElementById('fallback');
+const $refresh  = document.getElementById('refresh');
+const $root=document.getElementById('md-root');
+const $toc=document.getElementById('toc');
+const $fallback=document.getElementById('fallback');
+const $refresh=document.getElementById('refresh');
 
-    const $root=document.getElementById('md-root');
-    const $toc=document.getElementById('toc');
-    const $fallback=document.getElementById('fallback');
-    const $refresh=document.getElementById('refresh');
+const slugify = txt => txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
+const slugify=txt=>txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
 
-    function buildTOC(container){
-      const heads=container.querySelectorAll('h2,h3');
-      if(!heads.length){ $toc.innerHTML='<span style="opacity:.7">（此頁暫無目錄）</span>'; return; }
-      const ul=document.createElement('ul'); let currentH2Li = null;
-      heads.forEach(h=>{
-        if(!h.id) h.id = slugify(h.textContent);
-        const level = h.tagName==='H2'?2:3;
-        if(level===2){
-          const li=document.createElement('li');
-          const a=document.createElement('a'); a.href=`#${h.id}`; a.textContent=h.textContent;
-          li.appendChild(a);
-          const subUl=document.createElement('ul'); li.appendChild(subUl);
-          ul.appendChild(li); currentH2Li = subUl;
-        } else if(level===3 && currentH2Li){
-          const li=document.createElement('li');
-          const a=document.createElement('a'); a.href=`#${h.id}`; a.textContent=h.textContent;
-          li.appendChild(a); currentH2Li.appendChild(li);
-        }
+function buildTOC(container){
+  const heads = container.querySelectorAll('h2, h3');
+  if(!heads.length){ $toc.innerHTML = '<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; return; }
+  const ul = document.createElement('ul'); ul.style.listStyle='none'; ul.style.paddingLeft='0';
+  heads.forEach(h => {
+    const level = h.tagName==='H2'?2:3; if(!h.id) h.id=slugify(h.textContent);
+    const li=document.createElement('li'); li.style.margin=level===2?'.3rem 0':'.2rem 0 .2rem 1rem';
+    const a=document.createElement('a'); a.href=`#${h.id}`; a.textContent=h.textContent; a.className='emfont-CEFFontsCJKMono';
+    li.appendChild(a); ul.appendChild(li);
+  const heads=container.querySelectorAll('h2,h3');
+  if(!heads.length){ 
+    $toc.innerHTML='<span class="emfont-CEFFontsCJKMono" style="opacity:.7">（此頁暫無目錄）</span>'; 
+    return; 
+  }
+
+  const ul=document.createElement('ul'); 
+  ul.style.listStyle='none'; 
+  ul.style.paddingLeft='0';
+  let currentH2Li = null;
+
+  heads.forEach(h=>{
+    if(!h.id) h.id = slugify(h.textContent);
+    const level = h.tagName==='H2'?2:3;
+
+    if(level===2){
+      const li=document.createElement('li'); 
+      li.style.margin='.3rem 0';
+      const a=document.createElement('a'); 
+      a.href=`#${h.id}`; 
+      a.textContent=h.textContent; 
+      a.className='emfont-CEFFontsCJKMono';
+      a.style.cursor='pointer';
+      
+      const subUl=document.createElement('ul'); 
+      subUl.style.listStyle='none'; 
+      subUl.style.paddingLeft='1rem';
+      subUl.style.display='block'; // 初始展開
+      
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        subUl.classList.toggle('collapsed'); // 動畫切換
+        document.getElementById(h.id).scrollIntoView({behavior:'smooth'});
       });
-      $toc.replaceChildren(ul);
+
+      li.appendChild(a);
+      li.appendChild(subUl);
+      ul.appendChild(li);
+      currentH2Li = subUl;
+
+    } else if(level===3 && currentH2Li){
+      const li=document.createElement('li'); 
+      li.style.margin='.2rem 0';
+      const a=document.createElement('a'); 
+      a.href=`#${h.id}`; 
+      a.textContent=h.textContent; 
+      a.className='emfont-CEFFontsCJKMono';
+      li.appendChild(a);
+      currentH2Li.appendChild(li);
     }
+  });
 
-    function render(md){
-      const raw=marked.parse(md,{mangle:false,headerIds:false});
-      const clean=DOMPurify.sanitize(raw);
-      $root.innerHTML=clean;
-      $root.setAttribute('aria-busy','false');
-      buildTOC($root);
+  $toc.replaceChildren(ul);
+}
+
+function autoResizeMedia(container){
+  container.querySelectorAll('iframe').forEach(el=>{el.style.width='100%'; el.style.height=`${el.clientWidth*9/16}px`; el.style.maxWidth='100%';});
+  container.querySelectorAll('video').forEach(el=>{el.style.width='100%'; el.style.height='auto'; el.controls=true;});
+  container.querySelectorAll('audio').forEach(el=>{el.style.width='100%'; el.controls=true;});
+}
+
+function render(md){
+  const raw=marked.parse(md,{mangle:false,headerIds:false});
+  const clean=DOMPurify.sanitize(raw);
+  $root.innerHTML=clean;
+  $root.setAttribute('aria-busy','false');
+  buildTOC($root);
+  autoResizeMedia($root);
+}
+
+function autoResizeMedia(container){
+  container.querySelectorAll('iframe').forEach(el=>{el.style.width='100%';el.style.height=`${el.clientWidth*9/16}px`;el.style.maxWidth='100%';});
+  container.querySelectorAll('video').forEach(el=>{el.style.width='100%';el.style.height='auto';el.controls=true;});
+  container.querySelectorAll('audio').forEach(el=>{el.style.width='100%';el.controls=true;});
+}
+
+function readCache(){try{const raw=localStorage.getItem(CACHE_KEY);if(!raw) return null;const {ts,md}=JSON.parse(raw);if(Date.now()-ts<CACHE_TTL) return md;}catch{}return null;}
+function writeCache(md){try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),md}));}catch{}}
+
+async function loadMarkdown({refresh=false}={}){
+  $root.setAttribute('aria-busy','true');
+  if(!refresh){const cached=readCache();if(cached){render(cached);return;}}
+  try{
+    const res=await fetch(HACKMD_URL,{cache:'no-store'});
+    if(res.status===401||res.status===403){
+      $root.innerHTML='<p style="color:red;">⚠️ 私密文檔或無法存取 HackMD 內容，請確認權限或聯絡管理員。</p>';
+      $fallback.hidden=false; $root.setAttribute('aria-busy','false'); return;
     }
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const md=await res.text(); render(md); writeCache(md); $fallback.hidden=true;
+  }catch(err){console.warn('HackMD 取用失敗：',err); $fallback.hidden=false; $root.setAttribute('aria-busy','false');}
+}
 
-    function readCache(){try{const raw=localStorage.getItem(CACHE_KEY);if(!raw) return null;const {ts,md}=JSON.parse(raw);if(Date.now()-ts<CACHE_TTL) return md;}catch{}return null;}
-    function writeCache(md){try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),md}));}catch{}}
-
-    async function loadMarkdown({refresh=false}={}){
-      $root.setAttribute('aria-busy','true');
-      if(!refresh){const cached=readCache();if(cached){render(cached);return;}}
-      try{
-        const res=await fetch(HACKMD_URL,{cache:'no-store'});
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const md=await res.text(); render(md); writeCache(md); $fallback.hidden=true;
-      }catch(err){console.warn('HackMD 取用失敗：',err); $fallback.hidden=false; $root.setAttribute('aria-busy','false');}
-    }
-
-    $refresh.addEventListener('click',()=>{localStorage.removeItem(CACHE_KEY);loadMarkdown({refresh:true});});
-    loadMarkdown();
+$refresh.addEventListener('click',()=>{try{localStorage.removeItem(CACHE_KEY);}catch{} loadMarkdown({refresh:true});});
+loadMarkdown();
+window.addEventListener('resize',()=>autoResizeMedia($root));
   </script>
 </body>
 </html>
