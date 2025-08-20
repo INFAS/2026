@@ -34,6 +34,44 @@
     emfont.init();
   </script>
 
+  <style>
+    /* 目錄高亮樣式 */
+    #toc a {
+      transition: color 0.2s ease, font-weight 0.2s ease;
+      color: #666;
+      text-decoration: none;
+      padding: 0.2rem 0;
+      display: block;
+      border-radius: 4px;
+    }
+    
+    #toc a:hover {
+      color: #333;
+    }
+    
+    #toc a.active {
+      color: #000 !important;
+      font-weight: 600;
+      background-color: rgba(0, 0, 0, 0.05);
+      padding-left: 0.5rem;
+    }
+
+    /* 確保標題有足夠的 scroll margin */
+    h1, h2 {
+      scroll-margin-top: 100px;
+    }
+    
+    /* 確保 markdown 中的 H1 正確渲染 */
+    .markdown-body h1 {
+      display: block !important;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 2rem 0 1.5rem 0;
+      color: #1a1a1a;
+      border-bottom: none;
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -209,11 +247,25 @@
     const $fallback = document.getElementById('fallback');
     const $refresh  = document.getElementById('refresh');
 
+    // 滾動高亮相關變數
+    let headings = [];
+    let tocLinks = [];
+    let isScrolling = false;
+
     function buildTOC(container){
       // Only H2 per user's requirement
       const heads = container.querySelectorAll('h2');
-      if(!heads.length){ $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>'; return; }
+      headings = Array.from(heads); // 儲存標題元素供滾動監聽使用
+      
+      if(!heads.length){ 
+        $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>'; 
+        return; 
+      }
+      
       const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      
       heads.forEach(h=>{
         if(!h.id) h.id = slugify(h.textContent);
         const li = document.createElement('li');
@@ -221,10 +273,109 @@
         const a = document.createElement('a');
         a.href = `#${h.id}`;
         a.textContent = h.textContent;
+        a.addEventListener('click', handleTocClick);
         li.appendChild(a);
         ul.appendChild(li);
       });
+      
       $toc.replaceChildren(ul);
+      tocLinks = Array.from($toc.querySelectorAll('a')); // 儲存目錄連結供滾動監聽使用
+      
+      // 初始化滾動監聽
+      initScrollSpy();
+    }
+
+    function handleTocClick(e) {
+      isScrolling = true;
+      // 讓瀏覽器處理錨點跳轉
+      setTimeout(() => {
+        isScrolling = false;
+        updateActiveLink();
+      }, 500);
+    }
+
+    function initScrollSpy() {
+      if (headings.length === 0) return;
+
+      // 使用 Intersection Observer 來監聽標題的可見性
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (isScrolling) return;
+          
+          // 找到當前最接近頂部的可見標題
+          let currentHeading = null;
+          let minDistance = Infinity;
+          
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const rect = entry.target.getBoundingClientRect();
+              const distance = Math.abs(rect.top - 100); // 100px 是 scroll-margin-top
+              
+              if (distance < minDistance) {
+                minDistance = distance;
+                currentHeading = entry.target;
+              }
+            }
+          });
+          
+          // 如果沒有標題在視窗中，找最近的
+          if (!currentHeading) {
+            let minScrollDistance = Infinity;
+            headings.forEach(heading => {
+              const rect = heading.getBoundingClientRect();
+              const distance = Math.abs(rect.top - 100);
+              if (distance < minScrollDistance) {
+                minScrollDistance = distance;
+                currentHeading = heading;
+              }
+            });
+          }
+          
+          if (currentHeading) {
+            updateActiveLink(currentHeading.id);
+          }
+        },
+        {
+          rootMargin: '-80px 0px -50% 0px',
+          threshold: [0, 0.1, 0.5, 1]
+        }
+      );
+
+      // 觀察所有標題
+      headings.forEach(heading => observer.observe(heading));
+      
+      // 頁面載入時更新一次
+      setTimeout(updateActiveLink, 100);
+    }
+
+    function updateActiveLink(activeId) {
+      if (!activeId && headings.length > 0) {
+        // 自動找到當前最接近的標題
+        let closestHeading = headings[0];
+        let minDistance = Infinity;
+        
+        headings.forEach(heading => {
+          const rect = heading.getBoundingClientRect();
+          const distance = Math.abs(rect.top - 100);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestHeading = heading;
+          }
+        });
+        
+        activeId = closestHeading.id;
+      }
+
+      // 移除所有 active 類別
+      tocLinks.forEach(link => link.classList.remove('active'));
+      
+      // 為對應的目錄項添加 active 類別
+      if (activeId) {
+        const activeLink = tocLinks.find(link => link.getAttribute('href') === `#${activeId}`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+        }
+      }
     }
 
     function postprocess(container){
