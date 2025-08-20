@@ -33,6 +33,7 @@
     import "https://font.emtech.cc/emfont.js";
     emfont.init();
   </script>
+
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -155,7 +156,8 @@
       },
       tokenizer(src){
         // A) Blockquote 形式：> [!Kind] [可選**標題**] + 後續每行仍以 > 開頭
-        const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n((?:\s*>.*(?:\r?\n|$))*)/i;
+        // 更嚴格的匹配，確保不會跨越到下一個 admonition
+        const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n((?:\s*>\s*(?!\[\!\s*(?:Note|Tip|Important|Warning|Caution)\])[^\n]*(?:\r?\n|$))*?)(?=\s*(?:\r?\n)*\s*(?:>?\s*\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|:::|$))/i;
         const mBQ = reBQ.exec(src);
         if (mBQ){
           const raw = mBQ[0];
@@ -182,17 +184,21 @@
       },
       renderer(token){
         const inner = marked.parse(token.text);
-        // 僅在「有自訂標題」時顯示，否則不顯示 Danger/Info 等字樣
-        const title = token.title ? `<span class="title">${token.title}</span>` : '';
-        return `<div class="callout ${token.kind}">
-          ${title}
-          ${inner}
-        </div>`;
+
+        // 各種類型對應的 SVG
+        const icons = {
+          important: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-report mr-2"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>`,
+          note: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-info mr-2"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>`,
+          tip: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-light-bulb mr-2"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>`
+        };
+
+        const icon = icons[token.kind] || "";
+        const title = token.title ? `<span class="title">${icon}${token.title}</span>` : '';
+
+        return `<div class="callout ${token.kind}">${title}${inner}</div>`;
       }
     };
     marked.use({ extensions:[admonitionExt] });
-
-
 
     const HACKMD_URL = 'https://hackmd.io/@INFAS/SylYomltgx/download';
     const CACHE_KEY  = 'md:recruit:v3';
@@ -231,11 +237,64 @@
         cb.disabled = true;
         cb.closest('li')?.classList.add('task-list-item');
       });
+      
+      // --- Handle callouts trapped in blockquotes ---
+      container.querySelectorAll('blockquote').forEach(blockquote => {
+        const callouts = blockquote.querySelectorAll('.callout');
+        callouts.forEach(callout => {
+          // Move each callout out of the blockquote and place it after the blockquote
+          blockquote.parentNode.insertBefore(callout, blockquote.nextSibling);
+          // Remove any indentation styles
+          callout.style.marginLeft = '';
+          callout.style.paddingLeft = '';
+        });
+        
+        // If blockquote is now empty (or only contains whitespace), remove it
+        if (!blockquote.textContent.trim() || blockquote.children.length === 0) {
+          blockquote.remove();
+        }
+      });
+      
+      // --- Special handling for nested callouts ---
+      container.querySelectorAll('.callout.note').forEach(noteCallout => {
+        const nestedTips = noteCallout.querySelectorAll('.callout.tip');
+        nestedTips.forEach(tipCallout => {
+          noteCallout.parentNode.insertBefore(tipCallout, noteCallout.nextSibling);
+          tipCallout.style.marginLeft = '';
+          tipCallout.style.paddingLeft = '';
+        });
+      });
+      
+      // General nested callout flattening as backup
+      let changed = true;
+      let iterations = 0;
+      while (changed && iterations < 10) {
+        changed = false;
+        iterations++;
+        
+        container.querySelectorAll('.callout .callout').forEach(nestedCallout => {
+          const parentCallout = nestedCallout.closest('.callout');
+          if (parentCallout && parentCallout !== nestedCallout) {
+            parentCallout.parentNode.insertBefore(nestedCallout, parentCallout.nextSibling);
+            nestedCallout.style.marginLeft = '';
+            nestedCallout.style.paddingLeft = '';
+            changed = true;
+          }
+        });
+      }
+      
+      // Final cleanup: ensure all callouts at root level have proper styling
+      container.querySelectorAll('.callout').forEach(callout => {
+        if (!callout.closest('.callout .callout')) {
+          callout.style.marginLeft = '';
+          callout.style.paddingLeft = '';
+        }
+      });
     }
 
     function render(md){
       const raw = marked.parse(md);
-      const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true }});
+      const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true, svg: true, svgFilters: true }});
       $root.innerHTML = clean;
       $root.setAttribute('aria-busy','false');
       buildTOC($root);
