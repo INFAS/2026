@@ -35,35 +35,6 @@
   </script>
 
   <style>
-    /* TOC 箭頭樣式 */
-#toc summary,
-#toc a {
-  display: flex;
-  align-items: center;
-}
-
-#toc .arrow {
-  display: inline-block;
-  transition: transform 0.2s ease;
-  margin-right: 6px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 0.8rem;
-}
-
-#toc .arrow.open {
-  transform: rotate(90deg);
-}
-
-/* 收合區塊 */
-.section-content {
-  display: none;
-}
-.section-content.open {
-  display: block;
-}
-
     /* 目錄高亮樣式 */
     #toc a {
       transition: color 0.2s ease, font-weight 0.2s ease;
@@ -281,78 +252,39 @@
     let tocLinks = [];
     let isScrolling = false;
 
-function buildTOC(container){
-  const heads = container.querySelectorAll('h2');
-  headings = Array.from(heads);
-
-  if(!heads.length){
-    $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>';
-    return;
-  }
-
-  // 把每個 H2 到下一個 H2 的內容包起來
-  heads.forEach((h, idx) => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'section-content';
-    let next = heads[idx+1];
-    let node = h.nextElementSibling;
-    while(node && node !== next){
-      const nextNode = node.nextElementSibling;
-      wrapper.appendChild(node);
-      node = nextNode;
+    function buildTOC(container){
+      // Only H2 per user's requirement
+      const heads = container.querySelectorAll('h2');
+      headings = Array.from(heads); // 儲存標題元素供滾動監聽使用
+      
+      if(!heads.length){ 
+        $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>'; 
+        return; 
+      }
+      
+      const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      
+      heads.forEach(h=>{
+        if(!h.id) h.id = slugify(h.textContent);
+        const li = document.createElement('li');
+        li.style.margin = '.3rem 0';
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent;
+        a.addEventListener('click', handleTocClick);
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      
+      $toc.replaceChildren(ul);
+      tocLinks = Array.from($toc.querySelectorAll('a')); // 儲存目錄連結供滾動監聽使用
+      
+      // 初始化滾動監聽
+      initScrollSpy();
     }
-    h.insertAdjacentElement('afterend', wrapper);
-  });
 
-  const ul = document.createElement('ul');
-  ul.style.listStyle = 'none';
-  ul.style.padding = '0';
-
-  heads.forEach(h => {
-    if(!h.id) h.id = slugify(h.textContent);
-    const li = document.createElement('li');
-    li.style.margin = '.3rem 0';
-
-    const a = document.createElement('a');
-    a.href = `#${h.id}`;
-    a.textContent = h.textContent;
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      toggleSection(h);
-      document.getElementById(h.id).scrollIntoView({ behavior:'smooth', block:'start' });
-    });
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'arrow';
-    btn.innerHTML = '▶';
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      toggleSection(h);
-    });
-
-    li.appendChild(btn);
-    li.appendChild(a);
-    ul.appendChild(li);
-  });
-
-  $toc.replaceChildren(ul);
-  tocLinks = Array.from($toc.querySelectorAll('a'));
-  initScrollSpy();
-}
-
-function toggleSection(h){
-  const btn = $toc.querySelector(`a[href="#${h.id}"]`).previousSibling;
-  const wrapper = h.nextElementSibling;
-  const isOpen = wrapper.classList.contains('open');
-  if(isOpen){
-    wrapper.classList.remove('open');
-    btn.classList.remove('open');
-  }else{
-    wrapper.classList.add('open');
-    btn.classList.add('open');
-  }
-}
     function handleTocClick(e) {
       isScrolling = true;
       // 讓瀏覽器處理錨點跳轉
