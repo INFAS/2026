@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
   <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。">
+
+  <!-- PWA / Theming / Social -->
   <meta name="theme-color" content="#2C2C2C" />
   <meta property="og:type" content="website">
   <meta property="og:title" content="INFAS 2026 招募專區">
@@ -13,10 +15,42 @@
   <meta property="og:locale" content="zh_TW">
 
   <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
-  <!-- Use site's global stylesheet per user's request -->
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- CSP -->
+  <!-- Markdown reset / components -->
+  <style>
+    /* Markdown reset */
+    .markdown-body { max-width: unset; }
+    .markdown-body img { max-width: 100%; height: auto; }
+    .task-list-item { list-style: none; }
+    .task-list-item input { margin-right: .5rem; }
+
+    /* Callout 基礎樣式 */
+    .callout { border-left: 4px solid; border-radius: 8px; padding: .85rem 1rem; margin: 1rem 0; background-color: #f9f9f9; }
+    .callout .title { display: block; font-weight: 700; margin-bottom: .35rem; }
+    .callout.note { border-color: #2d7df6; background-color: #f0f5ff; color: #1e3a8a; }
+    .callout.tip { border-color: #059669; background-color: #f0fdf4; color: #065f46; }
+    .callout.important { border-color: #dc2626; background-color: #fef2f2; color: #991b1b; }
+    .callout.warning { border-color: #f97316; background-color: #fff7ed; color: #b45309; }
+    .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
+    .callout img, .callout iframe, .callout video, .callout audio { max-width: 100%; height: auto; }
+
+    /* TOC 高亮與折疊 */
+    #toc a { transition: color .2s ease, font-weight .2s ease; color: #666; text-decoration: none; padding: .2rem 0; display: block; border-radius: 4px; }
+    #toc a:hover { color: #333; }
+    #toc a.active { color: #000 !important; font-weight: 600; background-color: rgba(0,0,0,.05); padding-left: .5rem; }
+    #toc ul { list-style: none; padding-left: 0; margin: 0; }
+    #toc ul ul { overflow: hidden; max-height: 1000px; transition: max-height .3s ease; padding-left: 1rem; }
+    #toc ul ul.collapsed { max-height: 0; }
+
+    /* 讓標題避免被頂部導覽遮住 */
+    h1, h2, h3 { scroll-margin-top: 100px; }
+
+    /* 確保 markdown H1 仍有適當樣式（若 HackMD 內容含 H1） */
+    .markdown-body h1 { display: block !important; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin: 2rem 0 1.5rem 0; color: #1a1a1a; border-bottom: none; }
+  </style>
+
+  <!-- CSP：集中定義，避免重複/矛盾 -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' data: https:;
@@ -24,54 +58,18 @@
                  script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
                  font-src 'self' https://font.emtech.cc data:;
                  connect-src 'self' https://hackmd.io;
-                 frame-src https://hackmd.io https://forms.gle https://docs.google.com;
+                 frame-src 'self' https://hackmd.io https://www.youtube.com https://player.vimeo.com https://docs.google.com https://forms.gle;
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
 
-  <!-- emfont -->
+  <!-- emfont（可選，若需字型載入） -->
   <script type="module">
     import "https://font.emtech.cc/emfont.js";
-    emfont.init();
+    // 若頁面需要套用某個字型 class，可以在此初始化
+    if (window.emfont && typeof emfont.init === 'function') {
+      emfont.init();
+    }
   </script>
-
-  <style>
-    /* 目錄高亮樣式 */
-    #toc a {
-      transition: color 0.2s ease, font-weight 0.2s ease;
-      color: #666;
-      text-decoration: none;
-      padding: 0.2rem 0;
-      display: block;
-      border-radius: 4px;
-    }
-    
-    #toc a:hover {
-      color: #333;
-    }
-    
-    #toc a.active {
-      color: #000 !important;
-      font-weight: 600;
-      background-color: rgba(0, 0, 0, 0.05);
-      padding-left: 0.5rem;
-    }
-
-    /* 確保標題有足夠的 scroll margin */
-    h1, h2 {
-      scroll-margin-top: 100px;
-    }
-    
-    /* 確保 markdown 中的 H1 正確渲染 */
-    .markdown-body h1 {
-      display: block !important;
-      font-size: 2.5rem;
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 2rem 0 1.5rem 0;
-      color: #1a1a1a;
-      border-bottom: none;
-    }
-  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要內容</a>
@@ -103,7 +101,7 @@
           <p>職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
           <div class="cta-row">
             <a class="btn btn-primary" href="#content">查看招募資訊</a>
-            <a class="btn btn-secondary" id="open-hackmd" href="https://hackmd.io/@INFAS/SylYomltgx" target="_blank" rel="noopener">在 HackMD 開啟</a>
+            <a class="btn btn-secondary" id="open-hackmd" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
           </div>
         </div>
       </div>
@@ -120,15 +118,15 @@
         </aside>
 
         <article id="md-root" class="markdown-body" aria-live="polite" aria-busy="true">
-          <!-- HackMD 渲染內容 -->
+          <!-- HackMD 內容會渲染在這裡 -->
         </article>
       </div>
 
       <div class="container" id="fallback" hidden>
         <div class="card">
-          <p>⚠️ 無法即時抓取 HackMD 內容（可能是網路或 CORS 問題）。以下為備援嵌入：</p>
+          <p>⚠️ 無法即時抓取 HackMD 內容（可能是權限、網路或 CORS 問題）。以下為備援嵌入：</p>
           <div style="aspect-ratio:16/9;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/SylYomltgx" width="100%" height="100%" style="border:0"></iframe>
+            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="100%" style="border:0"></iframe>
           </div>
         </div>
       </div>
@@ -141,7 +139,7 @@
         <div>
           <strong>Information Association of Student（INFAS）</strong>
           <p style="margin:.5rem 0 0 0">中學生資訊年會｜Since 2018</p>
-          <div class="foot-past">  
+          <div class="foot-past">
             <p><a href="../2018" aria-disabled="true">2018</a> | <a href="../2017" aria-disabled="true">2017</a> | <a href="../2016" aria-disabled="true">2016</a></p>
           </div>
         </div>
@@ -163,38 +161,30 @@
     </div>
   </footer>
 
-  <!-- Marked + DOMPurify （ESM） -->
+  <!-- Marked + DOMPurify -->
   <script type="module">
     import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
     import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
 
     const DOMPurify = createDOMPurify(window);
-
-    // HackMD-like settings
-    marked.setOptions({
-      gfm:true, breaks:false, mangle:false, headerIds:false
+    DOMPurify.setConfig({
+      ADD_TAGS: ['iframe','video','audio','source'],
+      ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop'],
+      USE_PROFILES: { html: true }
     });
 
-    // Helper: slugify
-    const slugify = (txt) => txt
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu,'')
-      .trim()
-      .replace(/\s+/g,'-');
+    // ===== Marked 設定與擴充：支援 ::: 與 [!NOTE] 類 callout =====
+    marked.setOptions({ gfm: true, breaks: false, mangle: false, headerIds: false });
 
-    // Extension: admonitions ([!NOTE] + :::info)
-    // For :::kind blocks we DO NOT show the "kind" label (per user request).
-    const admonitionExt = {
-      name: 'admonition',
+    const calloutExt = {
+      name: 'callout',
       level: 'block',
       start(src){
-        // 只要出現 [!Kind] 或 ::: 就觸發
         const m = /(?:^|\n)\s*(?:>\s*)?\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|(?:^|\n)\s*:::/i.exec(src);
         return m ? m.index : undefined;
       },
       tokenizer(src){
-        // A) Blockquote 形式：> [!Kind] [可選**標題**] + 後續每行仍以 > 開頭
-        // 更嚴格的匹配，確保不會跨越到下一個 admonition
+        // A) 引用型：> [!Kind] Optional **Title** + 之後仍以 > 開頭
         const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n((?:\s*>\s*(?!\[\!\s*(?:Note|Tip|Important|Warning|Caution)\])[^\n]*(?:\r?\n|$))*?)(?=\s*(?:\r?\n)*\s*(?:>?\s*\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|:::|$))/i;
         const mBQ = reBQ.exec(src);
         if (mBQ){
@@ -203,253 +193,127 @@
             .split(/\r?\n/)
             .map(l => l.replace(/^\s*>\s?/, ''))
             .join('\n');
-          return { type:'admonition', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim(), showLabel:true };
+          return { type:'callout', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim() };
         }
 
-        // B) 平鋪形式：[!Kind] [可選**標題**]（下一段為內容）
+        // B) 平鋪型：[!Kind] Optional **Title** + 下一段為內容
         const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n+((?:.*(?:\r?\n|$))*?)(?=(?:\r?\n{2,}|$))/i;
         const mPlain = rePlain.exec(src);
         if (mPlain){
-          return { type:'admonition', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim(), showLabel:true };
+          return { type:'callout', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim() };
         }
 
-        // C) :::kind [可選同行標題] + 內容 + :::
-        const re3 = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
-        const m3 = re3.exec(src);
-        if (m3){
-          return { type:'admonition', raw:m3[0], kind:m3[1].toLowerCase(), title:(m3[2]||'').trim(), text:(m3[3]||'').trim(), showLabel:true };
+        // C) :::kind OptionalTitle + 內容 + :::
+        const reFence = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
+        const mFence = reFence.exec(src);
+        if (mFence){
+          return { type:'callout', raw:mFence[0], kind:mFence[1].toLowerCase(), title:(mFence[2]||'').trim(), text:(mFence[3]||'').trim() };
         }
       },
       renderer(token){
         const inner = marked.parse(token.text);
-
-        // 各種類型對應的 SVG
-        const icons = {
-          important: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-report mr-2"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>`,
-          note: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-info mr-2"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>`,
-          tip: `<svg aria-hidden="true" height="16" width="16" viewBox="0 0 16 16" class="octicon octicon-light-bulb mr-2"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>`
-        };
-
-        const icon = icons[token.kind] || "";
-        const title = token.title ? `<span class="title">${icon}${token.title}</span>` : '';
-
-        return `<div class="callout ${token.kind}">${title}${inner}</div>`;
+        const title = token.title ? `<span class="title">${token.title}</span>` : '';
+        const kind = (token.kind||'note').toLowerCase();
+        return `<div class="callout ${kind}">${title}${inner}</div>`;
       }
     };
-    marked.use({ extensions:[admonitionExt] });
+    marked.use({ extensions:[calloutExt] });
 
-    const HACKMD_URL = 'https://hackmd.io/@INFAS/SylYomltgx/download';
-    const CACHE_KEY  = 'md:recruit:v3';
-    const CACHE_TTL  = 60 * 60 * 1000;
+    // ===== HackMD 來源與快取 =====
+    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
+    const CACHE_KEY  = 'md:recruit:v2';
+    const CACHE_TTL  = 60 * 60 * 1000; // 1 小時
 
+    // ===== DOM 參照 =====
     const $root     = document.getElementById('md-root');
     const $toc      = document.getElementById('toc');
     const $fallback = document.getElementById('fallback');
     const $refresh  = document.getElementById('refresh');
 
-    // 滾動高亮相關變數
-    let headings = [];
-    let tocLinks = [];
-    let isScrolling = false;
+    // ===== 工具 =====
+    const slugify = (txt) => txt.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
 
     function buildTOC(container){
-      // Only H2 per user's requirement
-      const heads = container.querySelectorAll('h2');
-      headings = Array.from(heads); // 儲存標題元素供滾動監聽使用
-      
-      if(!heads.length){ 
-        $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>'; 
-        return; 
+      const heads = container.querySelectorAll('h2, h3');
+      if(!heads.length){
+        $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>';
+        return;
       }
-      
+
       const ul = document.createElement('ul');
-      ul.style.listStyle = 'none';
-      ul.style.padding = '0';
-      
-      heads.forEach(h=>{
+      let currentH2Sub = null;
+
+      heads.forEach(h => {
         if(!h.id) h.id = slugify(h.textContent);
-        const li = document.createElement('li');
-        li.style.margin = '.3rem 0';
-        const a = document.createElement('a');
-        a.href = `#${h.id}`;
-        a.textContent = h.textContent;
-        a.addEventListener('click', handleTocClick);
-        li.appendChild(a);
-        ul.appendChild(li);
-      });
-      
-      $toc.replaceChildren(ul);
-      tocLinks = Array.from($toc.querySelectorAll('a')); // 儲存目錄連結供滾動監聽使用
-      
-      // 初始化滾動監聽
-      initScrollSpy();
-    }
+        const lvl = h.tagName === 'H2' ? 2 : 3;
 
-    function handleTocClick(e) {
-      isScrolling = true;
-      // 讓瀏覽器處理錨點跳轉
-      setTimeout(() => {
-        isScrolling = false;
-        updateActiveLink();
-      }, 500);
-    }
+        if(lvl === 2){
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href = `#${h.id}`; a.textContent = h.textContent; a.style.cursor='pointer';
+          const sub = document.createElement('ul');
+          sub.classList.remove('collapsed');
 
-    function initScrollSpy() {
-      if (headings.length === 0) return;
-
-      // 使用 Intersection Observer 來監聽標題的可見性
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (isScrolling) return;
-          
-          // 找到當前最接近頂部的可見標題
-          let currentHeading = null;
-          let minDistance = Infinity;
-          
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const rect = entry.target.getBoundingClientRect();
-              const distance = Math.abs(rect.top - 100); // 100px 是 scroll-margin-top
-              
-              if (distance < minDistance) {
-                minDistance = distance;
-                currentHeading = entry.target;
-              }
-            }
+          a.addEventListener('click', (e)=>{
+            e.preventDefault();
+            sub.classList.toggle('collapsed');
+            document.getElementById(h.id).scrollIntoView({ behavior:'smooth' });
           });
-          
-          // 如果沒有標題在視窗中，找最近的
-          if (!currentHeading) {
-            let minScrollDistance = Infinity;
-            headings.forEach(heading => {
-              const rect = heading.getBoundingClientRect();
-              const distance = Math.abs(rect.top - 100);
-              if (distance < minScrollDistance) {
-                minScrollDistance = distance;
-                currentHeading = heading;
-              }
-            });
-          }
-          
-          if (currentHeading) {
-            updateActiveLink(currentHeading.id);
-          }
-        },
-        {
-          rootMargin: '-80px 0px -50% 0px',
-          threshold: [0, 0.1, 0.5, 1]
-        }
-      );
 
-      // 觀察所有標題
-      headings.forEach(heading => observer.observe(heading));
-      
-      // 頁面載入時更新一次
-      setTimeout(updateActiveLink, 100);
+          li.appendChild(a); li.appendChild(sub); ul.appendChild(li);
+          currentH2Sub = sub;
+        } else if (lvl === 3 && currentH2Sub){
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href = `#${h.id}`; a.textContent = h.textContent;
+          li.appendChild(a); currentH2Sub.appendChild(li);
+        }
+      });
+
+      $toc.replaceChildren(ul);
+
+      // 初步 active 標示
+      updateActiveLink();
+      document.addEventListener('scroll', () => updateActiveLink(), { passive: true });
     }
 
-    function updateActiveLink(activeId) {
-      if (!activeId && headings.length > 0) {
-        // 自動找到當前最接近的標題
-        let closestHeading = headings[0];
-        let minDistance = Infinity;
-        
-        headings.forEach(heading => {
-          const rect = heading.getBoundingClientRect();
-          const distance = Math.abs(rect.top - 100);
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestHeading = heading;
-          }
-        });
-        
-        activeId = closestHeading.id;
-      }
-
-      // 移除所有 active 類別
-      tocLinks.forEach(link => link.classList.remove('active'));
-      
-      // 為對應的目錄項添加 active 類別
-      if (activeId) {
-        const activeLink = tocLinks.find(link => link.getAttribute('href') === `#${activeId}`);
-        if (activeLink) {
-          activeLink.classList.add('active');
-        }
-      }
+    function updateActiveLink(){
+      const anchors = Array.from($toc.querySelectorAll('a'));
+      if(!anchors.length) return;
+      // 找到距離視窗頂最近的 H2/H3
+      const heads = Array.from($root.querySelectorAll('h2, h3'));
+      let best = heads[0]; let bestDist = Infinity;
+      heads.forEach(h => {
+        const d = Math.abs(h.getBoundingClientRect().top - 100);
+        if (d < bestDist){ best = h; bestDist = d; }
+      });
+      anchors.forEach(a => a.classList.remove('active'));
+      const active = anchors.find(a => a.getAttribute('href') === `#${best.id}`);
+      if (active) active.classList.add('active');
     }
 
     function postprocess(container){
-      // external links
-      container.querySelectorAll('a[href^="http"]').forEach(a=>{
-        a.target = '_blank'; a.rel = 'noopener';
-      });
-      // task list
-      container.querySelectorAll('li input[type="checkbox"]').forEach(cb=>{
-        cb.disabled = true;
-        cb.closest('li')?.classList.add('task-list-item');
-      });
-      
-      // --- Handle callouts trapped in blockquotes ---
-      container.querySelectorAll('blockquote').forEach(blockquote => {
-        const callouts = blockquote.querySelectorAll('.callout');
-        callouts.forEach(callout => {
-          // Move each callout out of the blockquote and place it after the blockquote
-          blockquote.parentNode.insertBefore(callout, blockquote.nextSibling);
-          // Remove any indentation styles
-          callout.style.marginLeft = '';
-          callout.style.paddingLeft = '';
-        });
-        
-        // If blockquote is now empty (or only contains whitespace), remove it
-        if (!blockquote.textContent.trim() || blockquote.children.length === 0) {
-          blockquote.remove();
-        }
-      });
-      
-      // --- Special handling for nested callouts ---
-      container.querySelectorAll('.callout.note').forEach(noteCallout => {
-        const nestedTips = noteCallout.querySelectorAll('.callout.tip');
-        nestedTips.forEach(tipCallout => {
-          noteCallout.parentNode.insertBefore(tipCallout, noteCallout.nextSibling);
-          tipCallout.style.marginLeft = '';
-          tipCallout.style.paddingLeft = '';
-        });
-      });
-      
-      // General nested callout flattening as backup
-      let changed = true;
-      let iterations = 0;
-      while (changed && iterations < 10) {
-        changed = false;
-        iterations++;
-        
-        container.querySelectorAll('.callout .callout').forEach(nestedCallout => {
-          const parentCallout = nestedCallout.closest('.callout');
-          if (parentCallout && parentCallout !== nestedCallout) {
-            parentCallout.parentNode.insertBefore(nestedCallout, parentCallout.nextSibling);
-            nestedCallout.style.marginLeft = '';
-            nestedCallout.style.paddingLeft = '';
-            changed = true;
-          }
-        });
-      }
-      
-      // Final cleanup: ensure all callouts at root level have proper styling
-      container.querySelectorAll('.callout').forEach(callout => {
-        if (!callout.closest('.callout .callout')) {
-          callout.style.marginLeft = '';
-          callout.style.paddingLeft = '';
-        }
-      });
+      // 外部連結開新分頁
+      container.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+      // 任務清單唯讀
+      container.querySelectorAll('li input[type="checkbox"]').forEach(cb=>{ cb.disabled = true; cb.closest('li')?.classList.add('task-list-item'); });
+      // 媒體尺寸
+      autoResizeMedia(container);
     }
 
     function render(md){
       const raw = marked.parse(md);
-      const clean = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true, svg: true, svgFilters: true }});
+      const clean = DOMPurify.sanitize(raw);
       $root.innerHTML = clean;
       $root.setAttribute('aria-busy','false');
       buildTOC($root);
       postprocess($root);
+    }
+
+    function autoResizeMedia(container){
+      container.querySelectorAll('iframe').forEach(el=>{ el.style.width='100%'; el.style.height = `${el.clientWidth * 9 / 16}px`; el.style.maxWidth='100%'; });
+      container.querySelectorAll('video').forEach(el=>{ el.style.width='100%'; el.style.height='auto'; el.controls = true; });
+      container.querySelectorAll('audio').forEach(el=>{ el.style.width='100%'; el.controls = true; });
     }
 
     function readCache(){
@@ -461,6 +325,7 @@
       }catch{}
       return null;
     }
+
     function writeCache(md){
       try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md })); }catch{}
     }
@@ -472,7 +337,11 @@
         if(cached){ render(cached); return; }
       }
       try{
-        const res = await fetch(HACKMD_URL, { cache:'no-store' });
+        const res = await fetch(HACKMD_URL, { cache: 'no-store' });
+        if(res.status === 401 || res.status === 403){
+          $root.innerHTML = '<p style="color:#b91c1c">⚠️ 私密文檔或無法存取 HackMD 內容，請確認權限或聯絡管理員。</p>';
+          $fallback.hidden = false; $root.setAttribute('aria-busy','false'); return;
+        }
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
         const md = await res.text();
         render(md);
@@ -485,11 +354,15 @@
       }
     }
 
-    $refresh.addEventListener('click', ()=>{
+    // 事件
+    document.getElementById('refresh').addEventListener('click', ()=>{
       try{ localStorage.removeItem(CACHE_KEY); }catch{}
-      loadMarkdown({ refresh:true });
+      loadMarkdown({ refresh: true });
     });
 
+    window.addEventListener('resize', ()=> autoResizeMedia($root));
+
+    // 啟動
     loadMarkdown();
   </script>
 </body>
