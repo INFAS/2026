@@ -1,360 +1,182 @@
 <!doctype html>
-<html lang="zh-Hant-TW" dir="ltr">
+<html lang="zh-Hant-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>招募專區｜INFAS 全國中學生資訊年會 2026</title>
-  <meta name="description" content="INFAS 2026 招募專區：職缺、分工、時程、常見問答。內容由 HackMD 公開筆記即時匯入並可搜尋。" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>招募專區｜INFAS 2026</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+:root {
+  --gap: 2rem;
+  --toc-w: 260px;
+  --nav-h: 64px;
+  --ring: 0 0 0 3px rgba(59,130,246,.45);
+}
+.markdown-body { max-width: unset; }
+.markdown-body img { max-width: 100%; height: auto; }
+.task-list-item { list-style: none; }
+.task-list-item input { margin-right: .5rem; }
 
-  <!-- PWA / Theming / Social -->
-  <meta name="theme-color" content="#2C2C2C" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="INFAS 2026 招募專區" />
-  <meta property="og:description" content="加入籌備團隊：職缺、分工、時程、FAQ。內容自 HackMD 即時更新。" />
-  <meta property="og:image" content="/assets/img/og-cover.png" />
-  <meta property="og:locale" content="zh_TW" />
+/* Callout */
+.callout { border-left: 4px solid; border-radius: 12px; padding: .9rem 1rem; margin: 1rem 0; background-color: #f9f9f9; }
+.callout .title { display:block; font-weight:700; margin-bottom:.35rem; }
+.callout.note { border-color:#2d7df6;background-color:#f0f5ff;color:#1e3a8a;}
+.callout.tip { border-color:#059669;background-color:#f0fdf4;color:#065f46;}
+.callout.important { border-color:#dc2626;background-color:#fef2f2;color:#991b1b;}
+.callout.warning { border-color:#f97316;background-color:#fff7ed;color:#b45309;}
+.callout.caution { border-color:#eab308;background-color:#fefce8;color:#92400e;}
+.callout img, .callout iframe, .callout video, .callout audio { max-width: 100%; height:auto; }
 
-  <link rel="icon" type="image/png" sizes="256x256" href="./favicon256.png" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+/* TOC */
+#toc a { transition: color .15s ease, font-weight .15s ease; color:#555; text-decoration:none; display:block; padding:.2rem .25rem; border-radius:6px; }
+#toc a:hover, #toc a:focus-visible { color:#111; outline:none; box-shadow: var(--ring); }
+#toc a.active { color:#000 !important; font-weight:600; background-color: rgba(0,0,0,.06);}
+#toc ul { list-style:none; padding-left:0; margin:0;}
+#toc li { position:relative;}
+#toc ul ul { overflow:hidden; max-height:0; transition:max-height .25s ease; padding-left:.75rem; } /* 初始收起 */
+.toc-item { display:grid; grid-template-columns:1.25rem 1fr; align-items:center; gap:.25rem; }
+.toc-caret { width:1rem;height:1rem;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;padding:0;line-height:1;}
+.toc-caret-icon { display:inline-block; transform:rotate(-90deg); transition: transform .2s ease; }
+.toc-caret[aria-expanded="true"] .toc-caret-icon { transform: rotate(0deg); }
 
-  <style>
-    /* ===== Base / Markdown reset ===== */
-    :root {
-      --gap: 2rem;
-      --toc-w: 260px;
-      --nav-h: 64px;
-      --ring: 0 0 0 3px rgba(59,130,246,.45);
-    }
-    .markdown-body { max-width: unset; }
-    .markdown-body img { max-width: 100%; height: auto; }
-    .task-list-item { list-style: none; }
-    .task-list-item input { margin-right: .5rem; }
+/* 標題避免被導覽遮住 */
+h1,h2,h3,h4 { scroll-margin-top: calc(var(--nav-h)+20px);}
+.markdown-body h1 { display:block; font-size:2.2rem; font-weight:700; line-height:1.2; margin:2rem 0 1.5rem 0; color:#1a1a1a; border-bottom:none; }
 
-    /* ===== Callout 基礎樣式 ===== */
-    .callout { border-left: 4px solid; border-radius: 12px; padding: .9rem 1rem; margin: 1rem 0; background-color: #f9f9f9; }
-    .callout .title { display: block; font-weight: 700; margin-bottom: .35rem; }
-    .callout.note { border-color: #2d7df6; background-color: #f0f5ff; color: #1e3a8a; }
-    .callout.tip { border-color: #059669; background-color: #f0fdf4; color: #065f46; }
-    .callout.important { border-color: #dc2626; background-color: #fef2f2; color: #991b1b; }
-    .callout.warning { border-color: #f97316; background-color: #fff7ed; color: #b45309; }
-    .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
-    .callout img, .callout iframe, .callout video, .callout audio { max-width: 100%; height: auto; }
+/* Layout */
+#content { display:grid; grid-template-columns: var(--toc-w) 1fr; gap:var(--gap);}
+aside[aria-label="頁面目錄"] { position:sticky; top:calc(var(--nav-h)+16px); align-self:start; }
 
-    /* ===== TOC（左側目錄） ===== */
-    #toc a { transition: color .15s ease, font-weight .15s ease, background-color .15s ease; color: #555; text-decoration: none; display: block; padding: .2rem .25rem; border-radius: 6px; }
-    #toc a:hover, #toc a:focus-visible { color: #111; outline: none; box-shadow: var(--ring); }
-    #toc a.active { color: #000 !important; font-weight: 600; background-color: rgba(0,0,0,.06); }
-    #toc ul { list-style: none; padding-left: 0; margin: 0; }
-    #toc li { position: relative; }
-    #toc ul ul { overflow: hidden; max-height: 0; transition: max-height .25s ease; padding-left: .75rem; }
-
-    .toc-item { display: grid; grid-template-columns: 1.25rem 1fr; align-items: center; gap: .25rem; }
-    .toc-caret { width: 1rem; height: 1rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; border: none; background: transparent; padding: 0; line-height: 1; }
-    .toc-caret[aria-hidden="true"] { visibility: hidden; }
-    .toc-caret:focus-visible { box-shadow: var(--ring); border-radius: 6px; }
-    .toc-caret-icon { display: inline-block; transform: rotate(-90deg); transition: transform .2s ease; }
-    .toc-caret[aria-expanded="true"] .toc-caret-icon { transform: rotate(0deg); }
-
-    h1, h2, h3, h4 { scroll-margin-top: calc(var(--nav-h) + 20px); }
-    .markdown-body h1 { display: block !important; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin: 2rem 0 1.5rem 0; color: #1a1a1a; border-bottom: none; }
-
-    #content { display: grid; grid-template-columns: var(--toc-w) 1fr; gap: var(--gap); }
-    aside[aria-label="頁面目錄"] { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; }
-
-    @media (max-width: 1024px) {
-      :root { --gap: 1.25rem; --toc-w: 220px; }
-    }
-    @media (max-width: 768px) {
-      #content { grid-template-columns: 1fr; }
-      aside[aria-label="頁面目錄"] { position: static; }
-      #toc .toc-caret { display: none; }
-      #toc ul ul { max-height: none !important; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html:focus-within { scroll-behavior: auto; }
-      #toc ul ul { transition: none; }
-      .toc-caret-icon { transition: none; }
-    }
-  </style>
-
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self';
-                 img-src 'self' data: https:;
-                 style-src 'self' 'unsafe-inline';
-                 script-src 'self' https://font.emtech.cc https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline';
-                 font-src 'self' https://font.emtech.cc data:;
-                 connect-src 'self' https://hackmd.io;
-                 frame-src 'self' https://hackmd.io https://www.youtube.com https://player.vimeo.com https://docs.google.com https://forms.gle;
-                 base-uri 'self';
-                 form-action 'self' https://forms.gle">
-
-  <script type="module">
-    import "https://font.emtech.cc/emfont.js";
-    if (window.emfont && typeof emfont.init === 'function') { emfont.init(); }
-  </script>
+/* RWD */
+@media (max-width:1024px){ :root { --gap:1.25rem; --toc-w:220px; } }
+@media (max-width:768px){ #content{grid-template-columns:1fr;} aside[aria-label="頁面目錄"]{position:static;} #toc .toc-caret{display:none;} #toc ul ul{max-height:none !important;} }
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#main">跳到主要內容</a>
+<header class="nav" role="banner" style="min-height:var(--nav-h)">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="INFAS 首頁"><img src="./favicon256.png" width="36" height="36" alt="INFAS logo"><strong>INFAS 2026</strong></a>
+    <nav aria-label="主導覽">
+      <div class="nav-links">
+        <a href="about.html">關於</a>
+        <a href="recruit.html" aria-current="page">招募</a>
+        <a href="sponsor.html">贊助</a>
+        <a href="policy/privacy.html">隱私權</a>
+        <a href="index.html#contact">聯絡</a>
+      </div>
+    </nav>
+  </div>
+</header>
 
-  <header class="nav" role="banner" style="min-height:var(--nav-h)">
-    <div class="nav-inner">
-      <a class="brand" href="index.html" aria-label="INFAS 首頁">
-        <img src="./favicon256.png" alt="INFAS logo" class="logo" width="36" height="36" />
-        <strong>INFAS 2026</strong>
-      </a>
-      <nav aria-label="主導覽">
-        <div class="nav-links">
-          <a href="about.html">關於</a>
-          <a href="recruit.html" aria-current="page">招募</a>
-          <a href="sponsor.html">贊助</a>
-          <a href="policy/privacy.html">隱私權</a>
-          <a href="index.html#contact">聯絡</a>
-        </div>
-      </nav>
+<main id="main">
+<section class="hero" aria-label="招募">
+  <div class="hero-inner">
+    <span class="badge"><span class="badge-dot" aria-hidden="true"></span>招募專區 · 內容即時同步</span>
+    <div>
+      <h1>加入 INFAS 2026 籌備團隊</h1>
+      <p>職缺、分工、時程、常見問答</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#content">查看招募資訊</a>
+      </div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <main id="main">
-    <section class="hero" aria-label="招募">
-      <div class="hero-inner">
-        <span class="badge"><span class="badge-dot" aria-hidden="true"></span>招募專區 · 內容即時同步</span>
-        <div>
-          <h1>加入 INFAS 2026 籌備團隊</h1>
-          <p>職缺、分工、時程、常見問答，皆由 HackMD 自動同步更新</p>
-          <div class="cta-row">
-            <a class="btn btn-primary" href="#content">查看招募資訊</a>
-            <a class="btn btn-secondary" id="open-hackmd" href="https://hackmd.io/@INFAS/2026-recruit" target="_blank" rel="noopener">在 HackMD 開啟</a>
-          </div>
-        </div>
-      </div>
-    </section>
+<section class="section" aria-label="招募內容">
+  <div class="container" id="content">
+    <aside aria-label="頁面目錄">
+      <h2 style="margin-top:0">目錄</h2>
+      <nav id="toc" class="foot-links" aria-label="章節導覽"></nav>
+    </aside>
+    <article id="md-root" class="markdown-body" aria-live="polite" aria-busy="true">
+      <!-- 這裡可以直接貼 HackMD markdown -->
+      ## H2 範例標題 1
+      ### H3 子標題
+      內容文字...
+      ## H2 範例標題 2
+      ### H3 子標題
+      內容文字...
+    </article>
+  </div>
+</section>
+</main>
 
-    <section class="section" aria-label="招募內容">
-      <div class="container" id="content">
-        <aside aria-label="頁面目錄">
-          <h2 style="margin-top:0">目錄</h2>
-          <nav id="toc" class="foot-links" aria-label="章節導覽"></nav>
-          <div style="margin-top:1rem">
-            <button id="refresh" class="btn btn-secondary" type="button">重新整理內容</button>
-          </div>
-        </aside>
+<footer role="contentinfo">
+  <div class="footer-inner">© 2026 INFAS. All rights reserved.</div>
+</footer>
 
-        <article id="md-root" class="markdown-body" aria-live="polite" aria-busy="true">
-          <!-- HackMD 內容會渲染在這裡 -->
-        </article>
-      </div>
+<script type="module">
+import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
+import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
+const DOMPurify = createDOMPurify(window);
 
-      <div class="container" id="fallback" hidden>
-        <div class="card">
-          <p>⚠️ 無法即時抓取 HackMD 內容（可能是權限、網路或 CORS 問題）。以下為備援嵌入：</p>
-          <div style="aspect-ratio:16/9;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden">
-            <iframe title="HackMD 招募專區" src="https://hackmd.io/@INFAS/2026-recruit" width="100%" height="100%" style="border:0"></iframe>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+DOMPurify.setConfig({
+  ADD_TAGS: ['iframe','video','audio','source'],
+  ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop','loading'],
+  USE_PROFILES: { html: true }
+});
 
-  <footer role="contentinfo">
-    <div class="footer-inner">
-      <div class="foot-grid">
-        <div>
-          <strong>Information Association of Student（INFAS）</strong>
-          <p style="margin:.5rem 0 0 0">中學生資訊年會｜Since 2018</p>
-          <div class="foot-past">
-            <p><a href="../2018" aria-disabled="true">2018</a> | <a href="../2017" aria-disabled="true">2017</a> | <a href="../2016" aria-disabled="true">2016</a></p>
-          </div>
-        </div>
-        <div class="foot-links">
-          <strong>網站</strong>
-          <a href="/">首頁</a>
-          <a href="recruit.html">招募</a>
-          <a href="sponsor.html">贊助</a>
-          <a href="policy/privacy.html">隱私權政策</a>
-        </div>
-        <div class="foot-links">
-          <strong>社群</strong>
-          <a href="https://www.facebook.com/infas.club" aria-disabled="true">Facebook</a>
-          <a href="https://www.instagram.com/infas.tw" aria-disabled="true">Instagram</a>
-          <a href="https://hackmd.io/@INFAS" aria-disabled="true">HackMD</a>
-        </div>
-      </div>
-      <div class="copyright">© 2026 INFAS. All rights reserved.</div>
-    </div>
-  </footer>
+marked.setOptions({ gfm:true, breaks:false, mangle:false, headerIds:false });
 
-  <script type="module">
-    import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
-    import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
+// TOC
+const $root = document.getElementById('md-root');
+const $toc = document.getElementById('toc');
+function slugify(txt){ return txt.trim().toLowerCase().replace(/\s+/g,'-'); }
 
-    const DOMPurify = createDOMPurify(window);
-    DOMPurify.setConfig({
-      ADD_TAGS: ['iframe','video','audio','source'],
-      ADD_ATTR: ['allow','allowfullscreen','frameborder','scrolling','controls','autoplay','muted','loop','loading'],
-      USE_PROFILES: { html: true }
-    });
+function ensureHeadingIds(container){
+  container.querySelectorAll('h2,h3,h4').forEach(h=>{
+    if(!h.id) h.id = slugify(h.textContent);
+  });
+}
 
-    marked.setOptions({ gfm: true, breaks: false, mangle: false, headerIds: false });
+function buildTOC(container){
+  const heads = Array.from(container.querySelectorAll('h2,h3,h4'));
+  const ulRoot = document.createElement('ul');
+  const stack = [{ level: 1, ul: ulRoot }];
+  heads.forEach(h=>{
+    const level = parseInt(h.tagName.substring(1),10);
+    while(stack[stack.length-1].level >= level) stack.pop();
+    const parent = stack[stack.length-1];
 
-    /* ========== Callout Extension ========== */
-    const calloutExt = {
-      name: 'callout',
-      level: 'block',
-      start(src){
-        const m = /(?:^|\n)\s*(?:>\s*)?\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|(?:^|\n)\s*:::/i.exec(src);
-        return m ? m.index : undefined;
-      },
-      tokenizer(src){
-        const reBQ = /^(?:^|\n)\s*>\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n((?:\s*>\s*(?!\[\!\s*(?:Note|Tip|Important|Warning|Caution)\])[^\n]*(?:\r?\n|$))*?)(?=\s*(?:\r?\n)*\s*(?:>?\s*\[\!\s*(?:Note|Tip|Important|Warning|Caution)\]|:::|$))/i;
-        const mBQ = reBQ.exec(src);
-        if (mBQ){
-          const raw = mBQ[0];
-          const cleaned = (mBQ[3]||'').split(/\r?\n/).map(l => l.replace(/^\s*>\s?/,'')).join('\n');
-          return { type:'callout', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim() };
-        }
-        const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n+((?:.*(?:\r?\n|$))*?)(?=(?:\r?\n{2,}|$))/i;
-        const mPlain = rePlain.exec(src);
-        if (mPlain){
-          return { type:'callout', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim() };
-        }
-        const reFence = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
-        const mFence = reFence.exec(src);
-        if (mFence){
-          return { type:'callout', raw:mFence[0], kind:mFence[1].toLowerCase(), title:(mFence[2]||'').trim(), text:(mFence[3]||'').trim() };
-        }
-      },
-      renderer(token){
-        const inner = marked.parse(token.text);
-        const title = token.title ? `<span class="title">${token.title}</span>` : '';
-        const kind = (token.kind||'note').toLowerCase();
-        return `<div class="callout ${kind}">${title}${inner}</div>`;
-      }
-    };
-    marked.use({ extensions:[calloutExt] });
+    const li = document.createElement('li');
+    const row = document.createElement('div'); row.className='toc-item';
 
-    /* ========== HackMD URL & Cache ========== */
-    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
-    const CACHE_KEY  = 'md:recruit:v3';
-    const CACHE_TTL  = 60 * 60 * 1000;
+    const caret = document.createElement('button');
+    caret.className='toc-caret'; caret.type='button';
+    caret.innerHTML='<span class="toc-caret-icon">▶</span>';
+    caret.setAttribute('aria-expanded','false');
 
-    const $root     = document.getElementById('md-root');
-    const $toc      = document.getElementById('toc');
-    const $fallback = document.getElementById('fallback');
-    const $refresh  = document.getElementById('refresh');
+    const a=document.createElement('a'); a.href=`#${h.id}`; a.textContent=h.textContent;
 
-    const genUID = () => `sec-${Math.random().toString(36).slice(2,10)}`;
-    const normalize = s => s.normalize ? s.normalize('NFKD') : s;
-    const slugify = txt => {
-      const s = normalize(String(txt || '')).toLocaleLowerCase();
-      const slug = s.replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
-      return slug || genUID();
-    };
-    const headerSelector = 'h2, h3, h4';
+    row.appendChild(caret); row.appendChild(a); li.appendChild(row);
 
-    function ensureHeadingIds(container){
-      container.querySelectorAll(headerSelector).forEach(h => {
-        if(!h.id || h.id===''){
-          let fromText = slugify(h.textContent);
-          let id = fromText, i=2;
-          while(document.getElementById(id)) id = `${fromText}-${i++}`;
-          h.id = id;
-        }
-      });
+    const sub=document.createElement('ul'); sub.classList.add('is-collapsed'); li.appendChild(sub);
+    parent.ul.appendChild(li); stack.push({level,ul:sub,li});
+  });
+
+  ulRoot.addEventListener('click',e=>{
+    const btn=e.target.closest('.toc-caret'); if(!btn) return;
+    const li=btn.closest('li'); const sub=li.querySelector(':scope>ul'); if(!sub) return;
+    const isH2 = li.parentElement===ulRoot;
+    if(isH2){
+      ulRoot.querySelectorAll('>li>ul').forEach(ul=>{ if(ul!==sub) ul.classList.add('is-collapsed'); });
+      ulRoot.querySelectorAll('>li>.toc-item>.toc-caret').forEach(c=>{ if(c!==btn) c.setAttribute('aria-expanded','false'); });
     }
+    const willCollapse = sub.classList.toggle('is-collapsed');
+    btn.setAttribute('aria-expanded',!willCollapse);
+  });
 
-    function autoResizeMedia(container){
-      container.querySelectorAll('iframe').forEach(el=>{ el.style.width='100%'; el.style.maxWidth='100%'; el.style.height = `${el.clientWidth*9/16}px`; el.style.aspectRatio='16/9'; });
-      container.querySelectorAll('video').forEach(el=>{ el.style.width='100%'; });
-    }
+  $toc.replaceChildren(ulRoot);
+}
 
-    async function fetchMarkdown(force=false){
-      try{
-        $root.setAttribute('aria-busy','true');
-        let cached = localStorage.getItem(CACHE_KEY);
-        if(cached && !force){
-          cached = JSON.parse(cached);
-          if(Date.now() - cached.ts < CACHE_TTL){
-            renderMarkdown(cached.md);
-            return;
-          }
-        }
-        const res = await fetch(HACKMD_URL);
-        if(!res.ok) throw new Error('Fetch fail');
-        const md = await res.text();
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md }));
-        renderMarkdown(md);
-      }catch(e){
-        console.error(e);
-        $root.hidden = true;
-        $fallback.hidden = false;
-      }
-    }
+function postprocess(container){
+  container.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+}
 
-    function renderMarkdown(md){
-      $root.innerHTML = DOMPurify.sanitize(marked.parse(md));
-      $root.hidden = false;
-      $fallback.hidden = true;
-      ensureHeadingIds($root);
-      autoResizeMedia($root);
-      buildTOC();
-      $root.setAttribute('aria-busy','false');
-    }
-
-    /* ========== TOC Builder ========== */
-    function buildTOC(){
-      $toc.innerHTML='';
-      const h2List = Array.from($root.querySelectorAll('h2'));
-      h2List.forEach(h2=>{
-        const li = document.createElement('li');
-        const caretBtn = document.createElement('button');
-        caretBtn.className='toc-caret';
-        caretBtn.setAttribute('aria-expanded','false');
-        caretBtn.setAttribute('aria-hidden', h2.nextElementSibling && h2.nextElementSibling.tagName==='UL' ? 'false':'true');
-        caretBtn.innerHTML='<span class="toc-caret-icon">▸</span>';
-        li.className='toc-item';
-        const a = document.createElement('a');
-        a.href = `#${h2.id}`;
-        a.textContent = h2.textContent;
-        li.append(caretBtn, a);
-        $toc.appendChild(li);
-
-        // 收起所有章節內容
-        let contentNodes = [];
-        let next = h2.nextElementSibling;
-        while(next && !['H2','H3'].includes(next.tagName)){
-          contentNodes.push(next);
-          next = next.nextElementSibling;
-        }
-        contentNodes.forEach(n=> n.style.display='none');
-
-        caretBtn.addEventListener('click',()=>{
-          const isExpanded = caretBtn.getAttribute('aria-expanded')==='true';
-          // 收回所有其他 H2
-          $toc.querySelectorAll('.toc-caret').forEach(c=>{
-            c.setAttribute('aria-expanded','false');
-          });
-          contentNodes.forEach(n=> n.style.display='none');
-
-          if(!isExpanded){
-            caretBtn.setAttribute('aria-expanded','true');
-            contentNodes.forEach(n=> n.style.display='block');
-          }
-        });
-      });
-
-      // IntersectionObserver 高亮
-      const observer = new IntersectionObserver(entries=>{
-        entries.forEach(ent=>{
-          const id = ent.target.id;
-          const link = $toc.querySelector(`a[href="#${id}"]`);
-          if(link) link.classList.toggle('active', ent.isIntersecting);
-        });
-      },{ rootMargin:'-50% 0px -50% 0px', threshold:0 });
-      $root.querySelectorAll('h2').forEach(h=>observer.observe(h));
-    }
-
-    $refresh.addEventListener('click',()=> fetchMarkdown(true));
-    fetchMarkdown();
-  </script>
+ensureHeadingIds($root);
+buildTOC($root);
+postprocess($root);
+</script>
 </body>
 </html>
+
