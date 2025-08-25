@@ -40,14 +40,13 @@
     .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
     .callout img, .callout iframe, .callout video, .callout audio { max-width: 100%; height: auto; }
 
-    /* ===== TOC ===== */
+    /* ===== TOC（左側目錄） ===== */
     #toc a { transition: color .15s ease, font-weight .15s ease, background-color .15s ease; color: #555; text-decoration: none; display: block; padding: .2rem .25rem; border-radius: 6px; }
     #toc a:hover, #toc a:focus-visible { color: #111; outline: none; box-shadow: var(--ring); }
     #toc a.active { color: #000 !important; font-weight: 600; background-color: rgba(0,0,0,.06); }
     #toc ul { list-style: none; padding-left: 0; margin: 0; }
     #toc li { position: relative; }
-    #toc ul ul { overflow: hidden; max-height: 1000px; transition: max-height .25s ease; padding-left: .75rem; }
-    #toc ul ul.is-collapsed { max-height: 0; }
+    #toc ul ul { overflow: hidden; max-height: 0; transition: max-height .25s ease; padding-left: .75rem; }
 
     .toc-item { display: grid; grid-template-columns: 1.25rem 1fr; align-items: center; gap: .25rem; }
     .toc-caret { width: 1rem; height: 1rem; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; border: none; background: transparent; padding: 0; line-height: 1; }
@@ -62,9 +61,20 @@
     #content { display: grid; grid-template-columns: var(--toc-w) 1fr; gap: var(--gap); }
     aside[aria-label="頁面目錄"] { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; }
 
-    @media (max-width: 1024px) { :root { --gap: 1.25rem; --toc-w: 220px; } }
-    @media (max-width: 768px) { #content { grid-template-columns: 1fr; } aside[aria-label="頁面目錄"] { position: static; } #toc .toc-caret { display: none; } #toc ul ul { max-height: none !important; } }
-    @media (prefers-reduced-motion: reduce) { html:focus-within { scroll-behavior: auto; } #toc ul ul { transition: none; } .toc-caret-icon { transition: none; } }
+    @media (max-width: 1024px) {
+      :root { --gap: 1.25rem; --toc-w: 220px; }
+    }
+    @media (max-width: 768px) {
+      #content { grid-template-columns: 1fr; }
+      aside[aria-label="頁面目錄"] { position: static; }
+      #toc .toc-caret { display: none; }
+      #toc ul ul { max-height: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html:focus-within { scroll-behavior: auto; }
+      #toc ul ul { transition: none; }
+      .toc-caret-icon { transition: none; }
+    }
   </style>
 
   <meta http-equiv="Content-Security-Policy"
@@ -173,7 +183,6 @@
     </div>
   </footer>
 
-  <!-- Marked + DOMPurify + TOC/Observer + HackMD loader -->
   <script type="module">
     import { marked } from 'https://cdn.jsdelivr.net/npm/marked@12/+esm';
     import createDOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/+esm';
@@ -187,6 +196,7 @@
 
     marked.setOptions({ gfm: true, breaks: false, mangle: false, headerIds: false });
 
+    /* ========== Callout Extension ========== */
     const calloutExt = {
       name: 'callout',
       level: 'block',
@@ -199,147 +209,152 @@
         const mBQ = reBQ.exec(src);
         if (mBQ){
           const raw = mBQ[0];
-          const cleaned = (mBQ[3]||'').split(/\r?\n/).map(l => l.replace(/^\s*>\s?/, '')).join('\n');
-          return { type:'callout', raw, tokens: this.lexer.blockTokens(cleaned), info: mBQ[1] };
+          const cleaned = (mBQ[3]||'').split(/\r?\n/).map(l => l.replace(/^\s*>\s?/,'')).join('\n');
+          return { type:'callout', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim() };
+        }
+        const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n+((?:.*(?:\r?\n|$))*?)(?=(?:\r?\n{2,}|$))/i;
+        const mPlain = rePlain.exec(src);
+        if (mPlain){
+          return { type:'callout', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim() };
+        }
+        const reFence = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
+        const mFence = reFence.exec(src);
+        if (mFence){
+          return { type:'callout', raw:mFence[0], kind:mFence[1].toLowerCase(), title:(mFence[2]||'').trim(), text:(mFence[3]||'').trim() };
         }
       },
-      renderer(token){ return `<div class="callout ${token.info.toLowerCase()}"><span class="title">${token.info}</span>${marked.parser(token.tokens)}</div>`; }
+      renderer(token){
+        const inner = marked.parse(token.text);
+        const title = token.title ? `<span class="title">${token.title}</span>` : '';
+        const kind = (token.kind||'note').toLowerCase();
+        return `<div class="callout ${kind}">${title}${inner}</div>`;
+      }
     };
-    marked.use({ extensions: [calloutExt] });
+    marked.use({ extensions:[calloutExt] });
 
-    const $md = document.getElementById('md-root');
-    const $toc = document.getElementById('toc');
-    const headerSelector = 'h2,h3,h4';
+    /* ========== HackMD URL & Cache ========== */
+    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
+    const CACHE_KEY  = 'md:recruit:v3';
+    const CACHE_TTL  = 60 * 60 * 1000;
 
-    function genUID(){ return 'toc-' + Math.random().toString(36).slice(2, 10); }
+    const $root     = document.getElementById('md-root');
+    const $toc      = document.getElementById('toc');
+    const $fallback = document.getElementById('fallback');
+    const $refresh  = document.getElementById('refresh');
 
-    function expandParentsOf(id){
-      const a = $toc.querySelector(`a[href="#${id}"]`);
-      if(!a) return;
-      let parentLi = a.closest('li');
-      while(parentLi){
-        const ul = parentLi.querySelector(':scope > ul');
-        if(ul && ul.classList.contains('is-collapsed')) ul.classList.remove('is-collapsed');
-        const caret = parentLi.querySelector(':scope > .toc-item > .toc-caret');
-        if(caret) caret.setAttribute('aria-expanded','true');
-        parentLi = parentLi.parentElement.closest('li');
-      }
-    }
+    const genUID = () => `sec-${Math.random().toString(36).slice(2,10)}`;
+    const normalize = s => s.normalize ? s.normalize('NFKD') : s;
+    const slugify = txt => {
+      const s = normalize(String(txt || '')).toLocaleLowerCase();
+      const slug = s.replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
+      return slug || genUID();
+    };
+    const headerSelector = 'h2, h3, h4';
 
-    function setActiveLink(id){
-      $toc.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${id}`));
-    }
-
-    function buildTOC(container){
-      const heads = Array.from(container.querySelectorAll(headerSelector));
-      if(!heads.length){
-        $toc.innerHTML = '<span style="opacity:.7">（此頁暫無目錄）</span>';
-        return;
-      }
-
-      const ulRoot = document.createElement('ul');
-      const stack = [{ level: 1, ul: ulRoot }];
-
-      heads.forEach(h => {
-        const level = parseInt(h.tagName.substring(1), 10);
-        if(!h.id) h.id = h.textContent.trim().replace(/\s+/g,'-').toLowerCase();
-
-        const txt = h.textContent.trim();
-        while(stack[stack.length-1].level >= level) stack.pop();
-        const parent = stack[stack.length-1];
-
-        const li = document.createElement('li');
-        const row = document.createElement('div');
-        row.className = 'toc-item';
-
-        const caret = document.createElement('button');
-        caret.className = 'toc-caret';
-        caret.type = 'button';
-        caret.setAttribute('aria-label','切換次級目錄');
-        caret.innerHTML = '<span class="toc-caret-icon">▶</span>';
-        caret.dataset.controls = '';
-        caret.setAttribute('aria-expanded','true');
-
-        const a = document.createElement('a');
-        a.href = `#${h.id}`;
-        a.textContent = txt;
-        a.dataset.level = String(level);
-
-        row.appendChild(caret);
-        row.appendChild(a);
-        li.appendChild(row);
-
-        const sub = document.createElement('ul');
-        li.appendChild(sub);
-        parent.ul.appendChild(li);
-
-        stack.push({ level, ul: sub, li });
-      });
-
-      ulRoot.querySelectorAll('li').forEach(li => {
-        const caret = li.querySelector('.toc-caret');
-        const sub = li.querySelector(':scope > ul');
-        if(!sub || !sub.children.length){
-          caret.setAttribute('aria-hidden','true');
-          caret.tabIndex = -1;
-        }else{
-          const id = genUID();
-          sub.id = id;
-          caret.dataset.controls = id;
+    function ensureHeadingIds(container){
+      container.querySelectorAll(headerSelector).forEach(h => {
+        if(!h.id || h.id===''){
+          let fromText = slugify(h.textContent);
+          let id = fromText, i=2;
+          while(document.getElementById(id)) id = `${fromText}-${i++}`;
+          h.id = id;
         }
       });
-
-      ulRoot.addEventListener('click', (e) => {
-        const btn = e.target.closest('.toc-caret');
-        if(!btn) return;
-        const li = btn.closest('li');
-        const sub = document.getElementById(btn.dataset.controls);
-        if(!sub) return;
-
-        const isH2 = li.parentElement.closest('li')===null;
-        if(isH2){
-          ulRoot.querySelectorAll('> li > ul').forEach(ul => { if(ul!==sub) ul.classList.add('is-collapsed'); });
-          ulRoot.querySelectorAll('> li > .toc-item > .toc-caret').forEach(c => { if(c!==btn) c.setAttribute('aria-expanded','false'); });
-        }
-
-        const willCollapse = sub.classList.toggle('is-collapsed');
-        btn.setAttribute('aria-expanded', String(!willCollapse));
-      });
-
-      ulRoot.addEventListener('click', (e) => {
-        const link = e.target.closest('a[href^="#"]');
-        if(!link) return;
-        e.preventDefault();
-        const id = link.getAttribute('href').slice(1);
-        const target = document.getElementById(id);
-        if(!target) return;
-        const y = target.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) + 16);
-        window.scrollTo({ top: y, behavior: 'smooth' });
-        expandParentsOf(id);
-        setActiveLink(id);
-        history.replaceState(null,'',`#${id}`);
-      });
-
-      $toc.replaceChildren(ulRoot);
     }
 
-    async function loadHackMD(){
+    function autoResizeMedia(container){
+      container.querySelectorAll('iframe').forEach(el=>{ el.style.width='100%'; el.style.maxWidth='100%'; el.style.height = `${el.clientWidth*9/16}px`; el.style.aspectRatio='16/9'; });
+      container.querySelectorAll('video').forEach(el=>{ el.style.width='100%'; });
+    }
+
+    async function fetchMarkdown(force=false){
       try{
-        const res = await fetch('https://hackmd.io/@INFAS/2026-recruit');
-        if(!res.ok) throw new Error('HackMD fetch failed');
+        $root.setAttribute('aria-busy','true');
+        let cached = localStorage.getItem(CACHE_KEY);
+        if(cached && !force){
+          cached = JSON.parse(cached);
+          if(Date.now() - cached.ts < CACHE_TTL){
+            renderMarkdown(cached.md);
+            return;
+          }
+        }
+        const res = await fetch(HACKMD_URL);
+        if(!res.ok) throw new Error('Fetch fail');
         const md = await res.text();
-        $md.innerHTML = DOMPurify.sanitize(marked.parse(md));
-        buildTOC($md);
-        $md.setAttribute('aria-busy','false');
-        document.getElementById('fallback').hidden = true;
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md }));
+        renderMarkdown(md);
       }catch(e){
-        console.warn(e);
-        document.getElementById('fallback').hidden = false;
+        console.error(e);
+        $root.hidden = true;
+        $fallback.hidden = false;
       }
     }
 
-    document.getElementById('refresh').addEventListener('click', loadHackMD);
-    loadHackMD();
+    function renderMarkdown(md){
+      $root.innerHTML = DOMPurify.sanitize(marked.parse(md));
+      $root.hidden = false;
+      $fallback.hidden = true;
+      ensureHeadingIds($root);
+      autoResizeMedia($root);
+      buildTOC();
+      $root.setAttribute('aria-busy','false');
+    }
+
+    /* ========== TOC Builder ========== */
+    function buildTOC(){
+      $toc.innerHTML='';
+      const h2List = Array.from($root.querySelectorAll('h2'));
+      h2List.forEach(h2=>{
+        const li = document.createElement('li');
+        const caretBtn = document.createElement('button');
+        caretBtn.className='toc-caret';
+        caretBtn.setAttribute('aria-expanded','false');
+        caretBtn.setAttribute('aria-hidden', h2.nextElementSibling && h2.nextElementSibling.tagName==='UL' ? 'false':'true');
+        caretBtn.innerHTML='<span class="toc-caret-icon">▸</span>';
+        li.className='toc-item';
+        const a = document.createElement('a');
+        a.href = `#${h2.id}`;
+        a.textContent = h2.textContent;
+        li.append(caretBtn, a);
+        $toc.appendChild(li);
+
+        // 收起所有章節內容
+        let contentNodes = [];
+        let next = h2.nextElementSibling;
+        while(next && !['H2','H3'].includes(next.tagName)){
+          contentNodes.push(next);
+          next = next.nextElementSibling;
+        }
+        contentNodes.forEach(n=> n.style.display='none');
+
+        caretBtn.addEventListener('click',()=>{
+          const isExpanded = caretBtn.getAttribute('aria-expanded')==='true';
+          // 收回所有其他 H2
+          $toc.querySelectorAll('.toc-caret').forEach(c=>{
+            c.setAttribute('aria-expanded','false');
+          });
+          contentNodes.forEach(n=> n.style.display='none');
+
+          if(!isExpanded){
+            caretBtn.setAttribute('aria-expanded','true');
+            contentNodes.forEach(n=> n.style.display='block');
+          }
+        });
+      });
+
+      // IntersectionObserver 高亮
+      const observer = new IntersectionObserver(entries=>{
+        entries.forEach(ent=>{
+          const id = ent.target.id;
+          const link = $toc.querySelector(`a[href="#${id}"]`);
+          if(link) link.classList.toggle('active', ent.isIntersecting);
+        });
+      },{ rootMargin:'-50% 0px -50% 0px', threshold:0 });
+      $root.querySelectorAll('h2').forEach(h=>observer.observe(h));
+    }
+
+    $refresh.addEventListener('click',()=> fetchMarkdown(true));
+    fetchMarkdown();
   </script>
 </body>
 </html>
