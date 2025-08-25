@@ -22,7 +22,7 @@
     :root {
       --gap: 2rem;
       --toc-w: 260px;
-      --nav-h: 64px; /* 你的固定導覽大約高度 */
+      --nav-h: 64px;
       --ring: 0 0 0 3px rgba(59,130,246,.45);
     }
     .markdown-body { max-width: unset; }
@@ -40,7 +40,7 @@
     .callout.caution { border-color: #eab308; background-color: #fefce8; color: #92400e; }
     .callout img, .callout iframe, .callout video, .callout audio { max-width: 100%; height: auto; }
 
-    /* ===== TOC（左側目錄） ===== */
+    /* ===== TOC ===== */
     #toc a { transition: color .15s ease, font-weight .15s ease, background-color .15s ease; color: #555; text-decoration: none; display: block; padding: .2rem .25rem; border-radius: 6px; }
     #toc a:hover, #toc a:focus-visible { color: #111; outline: none; box-shadow: var(--ring); }
     #toc a.active { color: #000 !important; font-weight: 600; background-color: rgba(0,0,0,.06); }
@@ -56,36 +56,17 @@
     .toc-caret-icon { display: inline-block; transform: rotate(-90deg); transition: transform .2s ease; }
     .toc-caret[aria-expanded="true"] .toc-caret-icon { transform: rotate(0deg); }
 
-    /* 讓標題避免被頂部導覽遮住 */
     h1, h2, h3, h4 { scroll-margin-top: calc(var(--nav-h) + 20px); }
-
-    /* 確保 markdown H1 有適當樣式（若 HackMD 含 H1） */
     .markdown-body h1 { display: block !important; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin: 2rem 0 1.5rem 0; color: #1a1a1a; border-bottom: none; }
 
-    /* Layout for content + toc */
     #content { display: grid; grid-template-columns: var(--toc-w) 1fr; gap: var(--gap); }
     aside[aria-label="頁面目錄"] { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; }
 
-    /* RWD */
-    @media (max-width: 1024px) {
-      :root { --gap: 1.25rem; --toc-w: 220px; }
-    }
-    @media (max-width: 768px) {
-      #content { grid-template-columns: 1fr; }
-      aside[aria-label="頁面目錄"] { position: static; }
-      #toc .toc-caret { display: none; }
-      #toc ul ul { max-height: none !important; }
-    }
-
-    /* Motion reduce */
-    @media (prefers-reduced-motion: reduce) {
-      html:focus-within { scroll-behavior: auto; }
-      #toc ul ul { transition: none; }
-      .toc-caret-icon { transition: none; }
-    }
+    @media (max-width: 1024px) { :root { --gap: 1.25rem; --toc-w: 220px; } }
+    @media (max-width: 768px) { #content { grid-template-columns: 1fr; } aside[aria-label="頁面目錄"] { position: static; } #toc .toc-caret { display: none; } #toc ul ul { max-height: none !important; } }
+    @media (prefers-reduced-motion: reduce) { html:focus-within { scroll-behavior: auto; } #toc ul ul { transition: none; } .toc-caret-icon { transition: none; } }
   </style>
 
-  <!-- CSP：集中定義，避免重複/矛盾 -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' data: https:;
@@ -97,7 +78,6 @@
                  base-uri 'self';
                  form-action 'self' https://forms.gle">
 
-  <!-- emfont（可選） -->
   <script type="module">
     import "https://font.emtech.cc/emfont.js";
     if (window.emfont && typeof emfont.init === 'function') { emfont.init(); }
@@ -205,7 +185,6 @@
       USE_PROFILES: { html: true }
     });
 
-    /* ========== Marked：支援 ::: 與 [!NOTE] callout ========== */
     marked.setOptions({ gfm: true, breaks: false, mangle: false, headerIds: false });
 
     const calloutExt = {
@@ -220,83 +199,37 @@
         const mBQ = reBQ.exec(src);
         if (mBQ){
           const raw = mBQ[0];
-          const cleaned = (mBQ[3]||'')
-            .split(/\r?\n/)
-            .map(l => l.replace(/^\s*>\s?/, ''))
-            .join('\n');
-          return { type:'callout', raw, kind:mBQ[1].toLowerCase(), title:(mBQ[2]||'').trim(), text:cleaned.trim() };
-        }
-
-        const rePlain = /^(?:^|\n)\s*\[\!\s*(Note|Tip|Important|Warning|Caution)\](?:[ \t]*\*{0,2}\s*([^\n*]+?)\s*\*{0,2})?\s*\r?\n+((?:.*(?:\r?\n|$))*?)(?=(?:\r?\n{2,}|$))/i;
-        const mPlain = rePlain.exec(src);
-        if (mPlain){
-          return { type:'callout', raw:mPlain[0], kind:mPlain[1].toLowerCase(), title:(mPlain[2]||'').trim(), text:(mPlain[3]||'').trim() };
-        }
-
-        const reFence = /^(?:^|\n)\s*:::(\w+)(?:[ \t]+([^\n]+))?\s*\r?\n+((?:.*(?:\r?\n|$))*?):::\s*(?:\r?\n+|$)/;
-        const mFence = reFence.exec(src);
-        if (mFence){
-          return { type:'callout', raw:mFence[0], kind:mFence[1].toLowerCase(), title:(mFence[2]||'').trim(), text:(mFence[3]||'').trim() };
+          const cleaned = (mBQ[3]||'').split(/\r?\n/).map(l => l.replace(/^\s*>\s?/, '')).join('\n');
+          return { type:'callout', raw, tokens: this.lexer.blockTokens(cleaned), info: mBQ[1] };
         }
       },
-      renderer(token){
-        const inner = marked.parse(token.text);
-        const title = token.title ? `<span class="title">${token.title}</span>` : '';
-        const kind = (token.kind||'note').toLowerCase();
-        return `<div class="callout ${kind}">${title}${inner}</div>`;
+      renderer(token){ return `<div class="callout ${token.info.toLowerCase()}"><span class="title">${token.info}</span>${marked.parser(token.tokens)}</div>`; }
+    };
+    marked.use({ extensions: [calloutExt] });
+
+    const $md = document.getElementById('md-root');
+    const $toc = document.getElementById('toc');
+    const headerSelector = 'h2,h3,h4';
+
+    function genUID(){ return 'toc-' + Math.random().toString(36).slice(2, 10); }
+
+    function expandParentsOf(id){
+      const a = $toc.querySelector(`a[href="#${id}"]`);
+      if(!a) return;
+      let parentLi = a.closest('li');
+      while(parentLi){
+        const ul = parentLi.querySelector(':scope > ul');
+        if(ul && ul.classList.contains('is-collapsed')) ul.classList.remove('is-collapsed');
+        const caret = parentLi.querySelector(':scope > .toc-item > .toc-caret');
+        if(caret) caret.setAttribute('aria-expanded','true');
+        parentLi = parentLi.parentElement.closest('li');
       }
-    };
-    marked.use({ extensions:[calloutExt] });
-
-    /* ========== HackMD Source & Cache ========== */
-    const HACKMD_URL = 'https://hackmd.io/@INFAS/2026-recruit/download';
-    const CACHE_KEY  = 'md:recruit:v3';
-    const CACHE_TTL  = 60 * 60 * 1000; // 1 小時
-
-    /* ========== DOM Refs ========== */
-    const $root     = document.getElementById('md-root');
-    const $toc      = document.getElementById('toc');
-    const $fallback = document.getElementById('fallback');
-    const $refresh  = document.getElementById('refresh');
-
-    /* ========== Utils ========== */
-    const genUID = () => `sec-${Math.random().toString(36).slice(2,10)}`;
-    const normalize = (s) => s.normalize ? s.normalize('NFKD') : s;
-    const slugify = (txt) => {
-      const s = normalize(String(txt || '')).toLocaleLowerCase();
-      const slug = s.replace(/[^\p{L}\p{N}\s-]/gu,'').trim().replace(/\s+/g,'-');
-      return slug || genUID();
-    };
-
-    const headerSelector = 'h2, h3, h4';
-
-    function ensureHeadingIds(container){
-      container.querySelectorAll(headerSelector).forEach(h => {
-        if (!h.id || h.id === '') {
-          const fromText = slugify(h.textContent);
-          // 如果已存在同名 id，避免衝突
-          let id = fromText;
-          let i = 2;
-          while (document.getElementById(id)) { id = `${fromText}-${i++}`; }
-          h.id = id;
-        }
-      });
     }
 
-    function autoResizeMedia(container){
-      container.querySelectorAll('iframe').forEach(el=>{ el.style.width='100%'; el.style.maxWidth='100%'; el.style.height = `${el.clientWidth * 9 / 16}px`; el.loading = 'lazy'; });
-      container.querySelectorAll('img').forEach(el=>{ el.loading = 'lazy'; el.decoding = 'async'; });
-      container.querySelectorAll('video').forEach(el=>{ el.style.width='100%'; el.style.height='auto'; el.controls = true; });
-      container.querySelectorAll('audio').forEach(el=>{ el.style.width='100%'; el.controls = true; });
+    function setActiveLink(id){
+      $toc.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${id}`));
     }
 
-    function postprocess(container){
-      container.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
-      container.querySelectorAll('li input[type="checkbox"]').forEach(cb=>{ cb.disabled = true; cb.closest('li')?.classList.add('task-list-item'); });
-      autoResizeMedia(container);
-    }
-
-    /* ========== TOC Build (H2~H4) ========== */
     function buildTOC(container){
       const heads = Array.from(container.querySelectorAll(headerSelector));
       if(!heads.length){
@@ -305,17 +238,16 @@
       }
 
       const ulRoot = document.createElement('ul');
-      const stack = [{ level: 1, ul: ulRoot }]; // dummy root level 1
+      const stack = [{ level: 1, ul: ulRoot }];
 
       heads.forEach(h => {
-        const level = parseInt(h.tagName.substring(1), 10); // 2~4
-        const txt = h.textContent.trim();
+        const level = parseInt(h.tagName.substring(1), 10);
+        if(!h.id) h.id = h.textContent.trim().replace(/\s+/g,'-').toLowerCase();
 
-        // 調整 stack 到正確層級
-        while (stack[stack.length-1].level >= level) stack.pop();
+        const txt = h.textContent.trim();
+        while(stack[stack.length-1].level >= level) stack.pop();
         const parent = stack[stack.length-1];
 
-        // 建立 li
         const li = document.createElement('li');
         const row = document.createElement('div');
         row.className = 'toc-item';
@@ -323,17 +255,20 @@
         const caret = document.createElement('button');
         caret.className = 'toc-caret';
         caret.type = 'button';
-        caret.setAttribute('aria-label', '切換次級目錄');
+        caret.setAttribute('aria-label','切換次級目錄');
         caret.innerHTML = '<span class="toc-caret-icon">▶</span>';
         caret.dataset.controls = '';
-        caret.setAttribute('aria-expanded', 'true');
+        caret.setAttribute('aria-expanded','true');
 
         const a = document.createElement('a');
-        a.href = `#${h.id}`; a.textContent = txt; a.dataset.level = String(level);
+        a.href = `#${h.id}`;
+        a.textContent = txt;
+        a.dataset.level = String(level);
 
-        row.appendChild(caret); row.appendChild(a); li.appendChild(row);
+        row.appendChild(caret);
+        row.appendChild(a);
+        li.appendChild(row);
 
-        // 下層 ul
         const sub = document.createElement('ul');
         li.appendChild(sub);
         parent.ul.appendChild(li);
@@ -341,33 +276,36 @@
         stack.push({ level, ul: sub, li });
       });
 
-      // 補上僅有末節點的 caret 可見性：
-      // 若某 li 沒有子元素，隱藏 caret
       ulRoot.querySelectorAll('li').forEach(li => {
         const caret = li.querySelector('.toc-caret');
         const sub = li.querySelector(':scope > ul');
-        if (!sub || !sub.children.length) {
+        if(!sub || !sub.children.length){
           caret.setAttribute('aria-hidden','true');
           caret.tabIndex = -1;
-        } else {
+        }else{
           const id = genUID();
           sub.id = id;
-          li.querySelector('.toc-caret').dataset.controls = id;
+          caret.dataset.controls = id;
         }
       });
 
-      // 事件：caret 切換折疊
       ulRoot.addEventListener('click', (e) => {
         const btn = e.target.closest('.toc-caret');
         if(!btn) return;
-        const subId = btn.dataset.controls;
-        const sub = document.getElementById(subId);
+        const li = btn.closest('li');
+        const sub = document.getElementById(btn.dataset.controls);
         if(!sub) return;
-        const willExpand = sub.classList.toggle('is-collapsed');
-        btn.setAttribute('aria-expanded', String(!willExpand));
+
+        const isH2 = li.parentElement.closest('li')===null;
+        if(isH2){
+          ulRoot.querySelectorAll('> li > ul').forEach(ul => { if(ul!==sub) ul.classList.add('is-collapsed'); });
+          ulRoot.querySelectorAll('> li > .toc-item > .toc-caret').forEach(c => { if(c!==btn) c.setAttribute('aria-expanded','false'); });
+        }
+
+        const willCollapse = sub.classList.toggle('is-collapsed');
+        btn.setAttribute('aria-expanded', String(!willCollapse));
       });
 
-      // 事件：點擊錨點平滑捲動（校正固定導覽高度）
       ulRoot.addEventListener('click', (e) => {
         const link = e.target.closest('a[href^="#"]');
         if(!link) return;
@@ -377,128 +315,31 @@
         if(!target) return;
         const y = target.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) + 16);
         window.scrollTo({ top: y, behavior: 'smooth' });
-        // 展開對應的父層
         expandParentsOf(id);
-        // 更新 active 標記
         setActiveLink(id);
-        history.replaceState(null, '', `#${id}`);
+        history.replaceState(null,'',`#${id}`);
       });
 
       $toc.replaceChildren(ulRoot);
     }
 
-    function expandParentsOf(id){
-      const link = $toc.querySelector(`a[href="#${CSS.escape(id)}"]`);
-      if(!link) return;
-      let li = link.closest('li');
-      while (li && li !== $toc) {
-        const sub = li.querySelector(':scope > ul');
-        const btn = li.querySelector(':scope > .toc-item > .toc-caret');
-        if(sub && btn){
-          sub.classList.remove('is-collapsed');
-          btn.setAttribute('aria-expanded','true');
-        }
-        li = li.parentElement?.closest('li');
-      }
-    }
-
-    function setActiveLink(id){
-      $toc.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-      const a = $toc.querySelector(`a[href="#${CSS.escape(id)}"]`);
-      if (a) a.classList.add('active');
-    }
-
-    /* ========== IntersectionObserver：追蹤可視標題 ========== */
-    let observer; // 保留供重建時清理
-    function observeHeadings(){
-      if (observer) observer.disconnect();
-      const heads = Array.from($root.querySelectorAll(headerSelector));
-      if (!heads.length) return;
-
-      observer = new IntersectionObserver((entries) => {
-        // 找到最靠近視窗頂部且可見的標題
-        const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length) {
-          setActiveLink(visible[0].target.id);
-          expandParentsOf(visible[0].target.id);
-        }
-      }, { rootMargin: `-${parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) + 20}px 0px -60% 0px`, threshold: [0, 1] });
-
-      heads.forEach(h => observer.observe(h));
-    }
-
-    /* ========== Cache Helpers ========== */
-    function readCache(){
+    async function loadHackMD(){
       try{
-        const raw = localStorage.getItem(CACHE_KEY);
-        if(!raw) return null;
-        const { ts, md } = JSON.parse(raw);
-        if(Date.now() - ts < CACHE_TTL) return md;
-      }catch{}
-      return null;
-    }
-    function writeCache(md){
-      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), md })); }catch{}
-    }
-
-    /* ========== Render Pipeline ========== */
-    function render(md){
-      const raw = marked.parse(md);
-      const clean = DOMPurify.sanitize(raw);
-      $root.innerHTML = clean;
-
-      ensureHeadingIds($root);
-      buildTOC($root);
-      postprocess($root);
-      observeHeadings();
-
-      $root.setAttribute('aria-busy','false');
-    }
-
-    /* ========== Fetch HackMD & Fallback ========== */
-    async function loadMarkdown({ refresh=false } = {}){
-      $root.setAttribute('aria-busy','true');
-      if(!refresh){
-        const cached = readCache();
-        if(cached){ render(cached); return; }
-      }
-      try{
-        const res = await fetch(HACKMD_URL, { cache: 'no-store' });
-        if(res.status === 401 || res.status === 403){
-          $root.innerHTML = '<p style="color:#b91c1c">⚠️ 私密文檔或無法存取 HackMD 內容，請確認權限或聯絡管理員。</p>';
-          $fallback.hidden = false; $toc.innerHTML = ''; $root.setAttribute('aria-busy','false'); return;
-        }
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetch('https://hackmd.io/@INFAS/2026-recruit');
+        if(!res.ok) throw new Error('HackMD fetch failed');
         const md = await res.text();
-        render(md);
-        writeCache(md);
-        $fallback.hidden = true;
-      }catch(err){
-        console.warn('HackMD 取用失敗：', err);
-        $fallback.hidden = false;
-        $toc.innerHTML = '';
-        $root.setAttribute('aria-busy','false');
+        $md.innerHTML = DOMPurify.sanitize(marked.parse(md));
+        buildTOC($md);
+        $md.setAttribute('aria-busy','false');
+        document.getElementById('fallback').hidden = true;
+      }catch(e){
+        console.warn(e);
+        document.getElementById('fallback').hidden = false;
       }
     }
 
-    /* ========== Events ========== */
-    $refresh.addEventListener('click', ()=>{
-      try{ localStorage.removeItem(CACHE_KEY); }catch{}
-      loadMarkdown({ refresh: true });
-    });
-
-    window.addEventListener('resize', ()=> autoResizeMedia($root));
-
-    // hash 變動時，確保展開父層並正確 active
-    window.addEventListener('hashchange', () => {
-      const id = decodeURIComponent(location.hash.replace('#',''));
-      if(!id) return;
-      expandParentsOf(id);
-      setActiveLink(id);
-    });
-
-    // 啟動
-    loadMarkdown();
+    document.getElementById('refresh').addEventListener('click', loadHackMD);
+    loadHackMD();
   </script>
 </body>
 </html>
